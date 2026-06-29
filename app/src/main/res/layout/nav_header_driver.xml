@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#FFFFFF"
+    android:padding="16dp">
+
+    <!-- UniPool Logo -->
+    <ImageView
+        android:id="@+id/imgDrawerLogo"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/unipool_logo"
+        android:contentDescription="UniPool Logo"/>
+
+    <!-- Driver Name -->
+    <TextView
+        android:id="@+id/txtDriverName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Jane Doe"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_dark"/>
+
+    <!-- Role -->
+    <TextView
+        android:id="@+id/txtDriverRole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Driver"
+        android:textSize="14sp"
+        android:textColor="#666666"/>
+
+</LinearLayout>

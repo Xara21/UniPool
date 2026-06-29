@@ -1,4 +1,12 @@
 package com.example.unipool
 
-class DriverTripLogsActivity {
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+
+class DriverTripLogsActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_driver_trip_logs)
+    }
 }

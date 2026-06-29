@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Background -->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_unipool"
+            android:contentDescription="Background"/>
+
+        <!-- Floating Menu -->
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="20dp"
+            android:contentDescription="Menu"
+            android:src="@drawable/ic_menu_24"
+            app:backgroundTint="@android:color/white"
+            app:tint="@android:color/black"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="28dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="32dp"
+                    android:background="@drawable/bg_card_rounded"
+                    android:elevation="12dp"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Logo -->
+
+                    <ImageView
+                        android:layout_width="140dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/unipool_logo"/>
+
+                    <!-- Title -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="NEW DEPARTURE"
+                        android:textColor="@android:color/black"
+                        android:textSize="22sp"
+                        android:textStyle="bold"/>
+
+                    <!-- Shuttle -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shuttle"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerShuttle"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="10dp"/>
+
+                    <!-- Destination -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Destination"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerDestination"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="10dp"/>
+
+                    <!-- Passenger Count -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Passenger Count"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnMinusPassenger"
+                            android:layout_width="60dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_button_black"
+                            android:text="-"
+                            android:textColor="@android:color/white"
+                            android:textSize="22sp"/>
+
+                        <TextView
+                            android:id="@+id/txtPassengerCount"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="0"
+                            android:textColor="@android:color/black"
+                            android:textSize="30sp"
+                            android:textStyle="bold"/>
+
+                        <Button
+                            android:id="@+id/btnPlusPassenger"
+                            android:layout_width="60dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_button_black"
+                            android:text="+"
+                            android:textColor="@android:color/white"
+                            android:textSize="22sp"/>
+
+                    </LinearLayout>
+
+                    <!-- Capacity -->
+
+                    <ProgressBar
+                        android:id="@+id/progressPassengers"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="12dp"
+                        android:layout_marginTop="15dp"
+                        android:max="30"
+                        android:progress="0"/>
+
+                    <TextView
+                        android:id="@+id/txtCapacity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="6dp"
+                        android:text="0 / 30 Seats"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <!-- Departure Time -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        android:text="Departure Time"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <EditText
+                        android:id="@+id/etDepartureTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="6dp"
+                        android:hint="10:45 AM"
+                        android:inputType="time"/>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnNow"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_button_black"
+                        android:text="NOW"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"/>
+
+                    <!-- Notes -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        android:text="Notes (Optional)"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <EditText
+                        android:id="@+id/etNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:gravity="top"
+                        android:hint="Enter notes..."
+                        android:inputType="textMultiLine"/>
+
+                    <!-- Start -->
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnStartTrip"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/bg_button_black"
+                        android:text="START TRIP"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+    <!-- Navigation Drawer -->
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white"
+        app:headerLayout="@layout/nav_header_driver"
+        app:itemIconTint="@null"
+        app:menu="@menu/driver_drawer_menu"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>
