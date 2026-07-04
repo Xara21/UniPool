@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -14,6 +15,7 @@ class DriverHomeActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
     private lateinit var btnMenu: FloatingActionButton
+    private lateinit var btnStartTrip: AppCompatButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,10 +24,17 @@ class DriverHomeActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawerLayout)
         navigationView = findViewById(R.id.navigationView)
         btnMenu = findViewById(R.id.btnMenu)
+        btnStartTrip = findViewById(R.id.btnStartTrip)
 
         // Open drawer
         btnMenu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        // Start New Trip button navigation to departures page
+        btnStartTrip.setOnClickListener {
+            val intent = Intent(this, DriverDeparturesActivity::class.java)
+            startActivity(intent)
         }
 
         // Drawer menu clicks

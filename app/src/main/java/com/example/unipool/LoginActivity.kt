@@ -53,10 +53,16 @@ class LoginActivity : AppCompatActivity() {
 
         val role = detectRole(username, email)
 
+        // 👇 FIX: Check for failure first and exit early if it's invalid
+        if (role == "Unknown") {
+            Toast.makeText(this, "Invalid username or email.", Toast.LENGTH_SHORT).show()
+            return // Stop right here, don't run anything below!
+        }
+
+        // 👇 Now this will ONLY run if a real, valid role was found
         Toast.makeText(this, "Logged in as $role", Toast.LENGTH_SHORT).show()
 
         when (role) {
-
             "Driver" -> {
                 startActivity(Intent(this, DriverHomeActivity::class.java))
                 finish()
@@ -75,10 +81,6 @@ class LoginActivity : AppCompatActivity() {
             "Admin" -> {
                 // TODO: Admin Dashboard
                 Toast.makeText(this, "Admin Dashboard Coming Soon", Toast.LENGTH_SHORT).show()
-            }
-
-            else -> {
-                Toast.makeText(this, "Invalid username or email.", Toast.LENGTH_SHORT).show()
             }
         }
     }
