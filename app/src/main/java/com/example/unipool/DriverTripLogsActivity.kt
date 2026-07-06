@@ -15,6 +15,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.example.unipool.models.TripLog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

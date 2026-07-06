@@ -173,16 +173,6 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
 
-            <Button
-                android:id="@+id/btnOpenSeats"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:text="Manage Seat Occupation"
-                android:backgroundTint="#2196F3"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
-
             <TableLayout
                 android:id="@+id/tablePassengerManifest"
                 android:layout_width="match_parent"

@@ -1,361 +1,372 @@
 package com.example.unipool
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.PopupMenu
-import android.widget.ScrollView
 import android.widget.TableLayout
-import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import android.app.AlertDialog
+import android.widget.GridLayout
+import android.widget.ScrollView
+import android.graphics.Color
+import android.view.Gravity
+import android.widget.TableRow
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.toColorInt
+import com.example.unipool.models.TripLog
+import com.example.unipool.models.SeatStatus
 
 class DriverPassengersActivity : AppCompatActivity() {
 
     private lateinit var panelStatusCard: LinearLayout
+
     private lateinit var txtCurrentStatus: TextView
     private lateinit var txtDriverName: TextView
     private lateinit var txtDepartureTime: TextView
     private lateinit var txtRouteName: TextView
+
+    private lateinit var txtOccupied: TextView
+    private lateinit var txtReserved: TextView
+    private lateinit var txtAvailable: TextView
+
     private lateinit var btnSelectTrip: Button
-    private lateinit var btnOpenSeats: Button
+    private lateinit var btnManageSeats: Button
     private lateinit var btnActionTrip: Button
+
     private lateinit var btnHamburger: ImageView
+
     private lateinit var tablePassengerManifest: TableLayout
 
-    private var currentStatusState = 0
-    private var selectedTripIndex = -1
+    private var currentTrip: TripLog? = null
 
-    private val totalConfiguredSeatsList = mutableListOf<String>()
-    private val unoccupiedSeatsList = mutableListOf<String>()
+    private var currentStatusState = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_driver_passengers)
 
-        initializeViews()
-        setupControlActions()
+            super.onCreate(savedInstanceState)
 
-        TripManager.loadFromStorage(this)
-        promptTripSelectionWorkflow()
-    }
+            setContentView(R.layout.activity_driver_passengers)
 
-    private fun initializeViews() {
-        panelStatusCard = findViewById(R.id.panelStatusCard)
-        txtCurrentStatus = findViewById(R.id.txtCurrentStatus)
-        txtDriverName = findViewById(R.id.txtDriverName)
-        txtDepartureTime = findViewById(R.id.txtDepartureTime)
-        txtRouteName = findViewById(R.id.txtRouteName)
-        btnSelectTrip = findViewById(R.id.btnSelectTrip)
-        btnOpenSeats = findViewById(R.id.btnOpenSeats)
-        btnActionTrip = findViewById(R.id.btnActionTrip)
-        btnHamburger = findViewById(R.id.btnHamburger)
-        tablePassengerManifest = findViewById(R.id.tablePassengerManifest)
-    }
+            initializeViews()
 
-    private fun promptTripSelectionWorkflow() {
-        val tripsList = TripManager.tripLogsList
-        if (tripsList.isEmpty()) {
-            Toast.makeText(this, "No trips found in history log records.", Toast.LENGTH_LONG).show()
-            txtDriverName.text = TripManager.currentDriverName
-            return
+            TripManager.loadFromStorage(this)
+
+            currentTrip = TripManager.currentTrip
+
+            if (currentTrip == null) {
+
+                Toast.makeText(
+                    this,
+                    "No active trip found.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                finish()
+                return
+            }
+
+            loadTripInformation()
+            setupButtons()
         }
 
-        val tripSelectionItems = tripsList.map { trip ->
-            val time = getReflectiveProperty(trip, arrayOf("departureTime", "time", "date"))
-            val destination = getReflectiveProperty(trip, arrayOf("destination", "route", "routeName"))
-            val status = getReflectiveProperty(trip, arrayOf("status", "tripStatus"))
-            "$time - $destination ($status)"
-        }.toTypedArray()
 
-        AlertDialog.Builder(this)
-            .setTitle("Select Active Trip Assignment")
-            .setCancelable(false)
-            .setItems(tripSelectionItems) { _, index ->
-                selectedTripIndex = index
-                bindSelectedTripData(tripsList[index])
-            }
-            .create()
-            .show()
-    }
+    private fun refreshPassengerManifest() {
 
-    @SuppressLint("SetTextI18n")
-    private fun bindSelectedTripData(trip: Any) {
-        txtDriverName.text = TripManager.currentDriverName
-        txtDepartureTime.text = getReflectiveProperty(trip, arrayOf("departureTime", "time", "date"))
-        txtRouteName.text = getReflectiveProperty(trip, arrayOf("destination", "route", "routeName"))
+        val trip = currentTrip ?: return
 
-        val rawSeats = getReflectiveProperty(trip, arrayOf("seats", "capacity", "totalSeats"))
-        val totalSeatsCount = rawSeats.toIntOrNull() ?: 10
-
-        totalConfiguredSeatsList.clear()
-        unoccupiedSeatsList.clear()
-
-        val rowsArray = arrayOf("A", "B", "C", "D")
-        var generatedCount = 0
-        for (r in rowsArray) {
-            val totalColumnsCount = if (r == "C" || r == "D") 4 else 5
-            for (c in 1..totalColumnsCount) {
-                if (generatedCount < totalSeatsCount) {
-                    val seatLabel = "$r$c"
-                    totalConfiguredSeatsList.add(seatLabel)
-                    unoccupiedSeatsList.add(seatLabel)
-                    generatedCount++
-                }
-            }
-        }
-
-        refreshPassengerTable()
-
-        val status = getReflectiveProperty(trip, arrayOf("status", "tripStatus"))
-        when (status) {
-            "Scheduled", "Pending" -> {
-                currentStatusState = 0
-                txtCurrentStatus.text = "Scheduled"
-                panelStatusCard.setBackgroundColor("#FFEB3B".toColorInt())
-                btnActionTrip.text = "Start Trip"
-                btnActionTrip.setBackgroundColor("#4CAF45".toColorInt())
-                btnActionTrip.isEnabled = true
-            }
-            "In Progress", "On Going", "Ongoing" -> {
-                currentStatusState = 1
-                txtCurrentStatus.text = "On Going"
-                panelStatusCard.setBackgroundColor("#4CAF50".toColorInt())
-                btnActionTrip.text = "End Trip"
-                btnActionTrip.setBackgroundColor("#F44336".toColorInt())
-                btnActionTrip.isEnabled = true
-            }
-            "Arrived", "Completed", "Finished" -> {
-                currentStatusState = 2
-                txtCurrentStatus.text = "Arrived"
-                panelStatusCard.setBackgroundColor("#1976D2".toColorInt())
-                btnActionTrip.text = "Trip Completed"
-                btnActionTrip.setBackgroundColor(Color.GRAY)
-                btnActionTrip.isEnabled = false
-            }
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun refreshPassengerTable() {
         val childCount = tablePassengerManifest.childCount
+
         if (childCount > 1) {
-            tablePassengerManifest.removeViews(1, childCount - 1)
+            tablePassengerManifest.removeViews(
+                1,
+                childCount - 1
+            )
         }
 
-        val occupiedSeatsList = totalConfiguredSeatsList.filter { !unoccupiedSeatsList.contains(it) }
+        var passengerNumber = 1
 
-        for (seatId in occupiedSeatsList) {
-            val row = TableRow(this).apply {
-                layoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT)
-                setPadding(0, 4, 0, 4)
-                gravity = Gravity.CENTER_VERTICAL
+        for (seat in trip.seats) {
+
+            if (seat.status != SeatStatus.OCCUPIED) {
+                continue
             }
 
-            val txtName = TextView(this).apply {
-                layoutParams = TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1.2f)
-                text = "Student"
-                setTextColor(Color.BLACK)
-                textSize = 13f
+            val row = TableRow(this)
+
+            row.layoutParams =
+                TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT
+                )
+
+            val txtPassenger = TextView(this)
+
+            txtPassenger.layoutParams =
+                TableRow.LayoutParams(
+                    0,
+                    TableRow.LayoutParams.WRAP_CONTENT,
+                    1.2f
+                )
+
+            txtPassenger.text = "Passenger $passengerNumber"
+
+            txtPassenger.setPadding(8,16,8,16)
+
+            val txtSeat = TextView(this)
+
+            txtSeat.layoutParams =
+                TableRow.LayoutParams(
+                    0,
+                    TableRow.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+
+            txtSeat.gravity = Gravity.CENTER
+
+            txtSeat.text = seat.id
+
+            val btnNotify = Button(this)
+
+            btnNotify.layoutParams =
+                TableRow.LayoutParams(
+                    0,
+                    TableRow.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+
+            btnNotify.text = "Notify"
+
+            btnNotify.setOnClickListener {
+
+                Toast.makeText(
+                    this,
+                    "Notification sent to Passenger $passengerNumber",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
-            val txtSeat = TextView(this).apply {
-                layoutParams = TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f)
-                text = "#$seatId"
-                setTextColor(Color.BLACK)
-                textSize = 13f
-            }
-
-            val btnNotifyPassenger = Button(this).apply {
-                layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT)
-                text = "Notify"
-                textSize = 11f
-                setOnClickListener {
-                    Toast.makeText(this@DriverPassengersActivity, "Notification sent to passenger in seat $seatId!", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            row.addView(txtName)
+            row.addView(txtPassenger)
             row.addView(txtSeat)
-            row.addView(btnNotifyPassenger)
+            row.addView(btnNotify)
+
             tablePassengerManifest.addView(row)
+
+            passengerNumber++
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun setupControlActions() {
-        btnHamburger.setOnClickListener {
-            val popup = PopupMenu(this, btnHamburger)
-            popup.menu.add("Statistics")
-            popup.menu.add("Departures")
-            popup.menu.add("Passengers")
-            popup.menu.add("Trip Logs")
-            popup.menu.add("Messages")
+    private fun refreshSeatCounters() {
 
-            popup.setOnMenuItemClickListener { item ->
-                when (item.title) {
-                    "Passengers" -> {
-                        Toast.makeText(this, "Already viewing Passengers Manifest", Toast.LENGTH_SHORT).show()
-                    }
-                    "Trip Logs" -> {
-                        try {
-                            val intent = Intent(this, Class.forName("com.example.unipool.TripLogsActivity"))
-                            startActivity(intent)
-                        } catch (_: Exception) {
-                            Toast.makeText(this, "Navigating to Trip Logs...", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    else -> {
-                        Toast.makeText(this, "Navigating to ${item.title}...", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                true
+        val trip = currentTrip ?: return
+
+        val occupied =
+            trip.seats.count {
+                it.status == SeatStatus.OCCUPIED
             }
-            popup.show()
+
+        val reserved =
+            trip.seats.count {
+                it.status == SeatStatus.RESERVED
+            }
+
+        val available =
+            trip.seats.count {
+                it.status == SeatStatus.AVAILABLE
+            }
+
+        txtOccupied.text =
+            "🟢 Occupied: $occupied"
+
+        txtReserved.text =
+            "🟡 Reserved: $reserved"
+
+        txtAvailable.text =
+            "🔴 Available: $available"
+    }
+
+    private fun setupButtons() {
+
+        btnManageSeats.setOnClickListener {
+            showSeatDialog()
         }
 
         btnSelectTrip.setOnClickListener {
-            promptTripSelectionWorkflow()
-        }
 
-        btnOpenSeats.setOnClickListener {
-            if (selectedTripIndex == -1) {
-                Toast.makeText(this, "Please select a trip assignment first.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            showSeatOccupationDialog()
+            Toast.makeText(
+                this,
+                "Trip selection will be added next.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         btnActionTrip.setOnClickListener {
-            if (selectedTripIndex == -1) return@setOnClickListener
 
-            val trip = TripManager.tripLogsList[selectedTripIndex]
-            when (currentStatusState) {
-                0 -> {
-                    currentStatusState = 1
-                    txtCurrentStatus.text = "On Going"
-                    panelStatusCard.setBackgroundColor("#4CAF50".toColorInt())
+            val trip = currentTrip ?: return@setOnClickListener
+
+            when (trip.status) {
+
+                "Scheduled" -> {
+
+                    trip.status = "In Progress"
+
                     btnActionTrip.text = "End Trip"
-                    btnActionTrip.setBackgroundColor("#F44336".toColorInt())
-                    setReflectiveProperty(trip, "status", "In Progress")
-                    TripManager.updateTrip(this, selectedTripIndex, trip)
                 }
-                1 -> {
-                    currentStatusState = 2
-                    txtCurrentStatus.text = "Arrived"
-                    panelStatusCard.setBackgroundColor("#1976D2".toColorInt())
+
+                "In Progress" -> {
+
+                    trip.status = "Completed"
+
                     btnActionTrip.text = "Trip Completed"
+
                     btnActionTrip.isEnabled = false
-                    btnActionTrip.setBackgroundColor(Color.GRAY)
-                    setReflectiveProperty(trip, "status", "Completed")
-                    TripManager.updateTrip(this, selectedTripIndex, trip)
                 }
             }
+
+            txtCurrentStatus.text = trip.status
+
+            TripManager.saveToStorage(this)
         }
     }
 
-    private fun showSeatOccupationDialog() {
-        val context = this
-        val dialogScrollView = ScrollView(context).apply {
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            setPadding(24, 24, 24, 24)
-        }
+    private fun showSeatDialog() {
 
-        val gridSeats = GridLayout(context).apply {
+        val trip = currentTrip ?: return
+
+        val scrollView = ScrollView(this)
+
+        val grid = GridLayout(this).apply {
             columnCount = 5
-            rowCount = 4
-            alignmentMode = GridLayout.ALIGN_BOUNDS
             useDefaultMargins = true
-            val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-            params.gravity = Gravity.CENTER
-            layoutParams = params
         }
 
-        val rowsArray = arrayOf("A", "B", "C", "D")
-        for (r in rowsArray.indices) {
-            val totalColumnsCount = if (rowsArray[r] == "C" || rowsArray[r] == "D") 4 else 5
-            for (c in 1..totalColumnsCount) {
-                val seatIdentifierLabel = "${rowsArray[r]}$c"
+        scrollView.addView(grid)
 
-                if (!totalConfiguredSeatsList.contains(seatIdentifierLabel)) {
-                    continue
+        for (seat in trip.seats) {
+
+            val button = Button(this)
+
+            button.layoutParams =
+                GridLayout.LayoutParams().apply {
+                    width = 150
+                    height = 150
+                    setMargins(10,10,10,10)
                 }
 
-                val seatButton = Button(context).apply {
-                    text = seatIdentifierLabel
-                    textSize = 12f
-                    setTextColor(Color.BLACK)
+            fun refreshSeatButton() {
 
-                    layoutParams = GridLayout.LayoutParams().apply {
-                        width = 110
-                        height = 110
-                        setMargins(6, 6, 6, 6)
+                when (seat.status) {
+
+                    SeatStatus.AVAILABLE -> {
+                        button.text = "🔴\n${seat.id}"
+                        button.setBackgroundColor(Color.parseColor("#F44336"))
                     }
 
-                    if (unoccupiedSeatsList.contains(seatIdentifierLabel)) {
-                        setBackgroundColor("#FFCDD2".toColorInt())
-                    } else {
-                        setBackgroundColor("#C8E6C9".toColorInt())
+                    SeatStatus.RESERVED -> {
+                        button.text = "🟡\n${seat.id}"
+                        button.setBackgroundColor(Color.parseColor("#FFC107"))
                     }
 
-                    setOnClickListener {
-                        if (unoccupiedSeatsList.contains(seatIdentifierLabel)) {
-                            unoccupiedSeatsList.remove(seatIdentifierLabel)
-                            setBackgroundColor("#C8E6C9".toColorInt())
-                            Toast.makeText(context, "Seat $seatIdentifierLabel Occupied", Toast.LENGTH_SHORT).show()
-                        } else {
-                            unoccupiedSeatsList.add(seatIdentifierLabel)
-                            setBackgroundColor("#FFCDD2".toColorInt())
-                            Toast.makeText(context, "Seat $seatIdentifierLabel Unoccupied", Toast.LENGTH_SHORT).show()
-                        }
-                        refreshPassengerTable()
+                    SeatStatus.OCCUPIED -> {
+                        button.text = "🟢\n${seat.id}"
+                        button.setBackgroundColor(Color.parseColor("#4CAF50"))
                     }
                 }
-                gridSeats.addView(seatButton)
             }
+
+            refreshSeatButton()
+
+            button.setOnClickListener {
+
+                seat.status =
+                    when (seat.status) {
+
+                        SeatStatus.AVAILABLE ->
+                            SeatStatus.RESERVED
+
+                        SeatStatus.RESERVED ->
+                            SeatStatus.OCCUPIED
+
+                        SeatStatus.OCCUPIED ->
+                            SeatStatus.AVAILABLE
+                    }
+
+                refreshSeatButton()
+
+                refreshPassengerManifest()
+
+                refreshSeatCounters()
+            }
+
+            grid.addView(button)
         }
 
-        dialogScrollView.addView(gridSeats)
+        AlertDialog.Builder(this)
+            .setTitle("Seat Occupation")
+            .setView(scrollView)
+            .setPositiveButton("Done") { _, _ ->
 
-        AlertDialog.Builder(context)
-            .setTitle("Seat Map (Red = Unoccupied)")
-            .setView(dialogScrollView)
-            .setPositiveButton("Done") { dialog, _ -> dialog.dismiss() }
-            .create()
+                TripManager.saveToStorage(this)
+
+            }
             .show()
     }
 
-    private fun getReflectiveProperty(obj: Any, fields: Array<String>): String {
-        for (fieldName in fields) {
-            try {
-                val field = obj::class.java.declaredFields.firstOrNull { it.name == fieldName }
-                if (field != null) {
-                    field.isAccessible = true
-                    return field.get(obj)?.toString() ?: ""
-                }
-            } catch (_: Exception) { }
-        }
-        return ""
+    private fun initializeViews() {
+
+        panelStatusCard =
+            findViewById(R.id.panelStatusCard)
+
+        txtCurrentStatus =
+            findViewById(R.id.txtCurrentStatus)
+
+        txtDriverName =
+            findViewById(R.id.txtDriverName)
+
+        txtDepartureTime =
+            findViewById(R.id.txtDepartureTime)
+
+        txtRouteName =
+            findViewById(R.id.txtRouteName)
+
+        txtOccupied =
+            findViewById(R.id.txtOccupied)
+
+        txtReserved =
+            findViewById(R.id.txtReserved)
+
+        txtAvailable =
+            findViewById(R.id.txtAvailable)
+
+        btnSelectTrip =
+            findViewById(R.id.btnSelectTrip)
+
+        btnManageSeats =
+            findViewById(R.id.btnManageSeats)
+
+        btnActionTrip =
+            findViewById(R.id.btnActionTrip)
+
+        btnHamburger =
+            findViewById(R.id.btnHamburger)
+
+        tablePassengerManifest =
+            findViewById(R.id.tablePassengerManifest)
     }
 
-    private fun setReflectiveProperty(obj: Any, fieldName: String, value: String) {
-        try {
-            val field = obj::class.java.declaredFields.firstOrNull { it.name == fieldName || it.name == "tripStatus" }
-            if (field != null) {
-                field.isAccessible = true
-                field.set(obj, value)
-            }
-        } catch (_: Exception) { }
+    private fun loadTripInformation() {
+
+        val trip = currentTrip ?: return
+
+        txtDriverName.text = trip.driverName
+        txtDepartureTime.text = trip.departureTime
+        txtRouteName.text = trip.destination
+        txtCurrentStatus.text = trip.status
+
+        refreshPassengerManifest()
+
+        refreshSeatCounters()
     }
+
 }
+

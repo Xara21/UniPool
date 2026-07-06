@@ -13,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AlertDialog
 import com.example.unipool.managers.SeatManager
 import com.example.unipool.models.SeatStatus
+import com.example.unipool.models.TripLog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import java.text.SimpleDateFormat
@@ -53,6 +54,7 @@ class DriverDeparturesActivity : AppCompatActivity() {
     private var passengerCount = 0
     private val maxPassengers = 30
 
+    private val seatManager = SeatManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

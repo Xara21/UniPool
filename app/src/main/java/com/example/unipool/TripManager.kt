@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import com.example.unipool.models.TripLog
+import com.example.unipool.models.Seat
+import com.example.unipool.models.SeatStatus
 
 
 
@@ -19,10 +21,63 @@ object TripManager {
     private const val PREFS_NAME = "unipool_prefs"
     private const val KEY_TRIPS = "trip_logs"
 
+    private fun createDefaultSeats(): MutableList<Seat> {
+
+        val seats = mutableListOf<Seat>()
+
+        val layout = listOf(
+            "A1","A2","A3","A4","A5",
+            "B1","B2","B3","B4","B5",
+            "C1","C2","C3","C4",
+            "D1","D2","D3","D4"
+        )
+
+        layout.forEach {
+
+            seats.add(
+                Seat(
+                    id = it,
+                    status = SeatStatus.AVAILABLE
+                )
+            )
+        }
+
+        return seats
+    }
+
     fun initDefaultTrips() {
+
         if (tripLogsList.isEmpty()) {
-            tripLogsList.add(TripLog("1", "Jane Doe", "3", "2025-07-21 08:00 AM", "2025-07-21 09:00 AM", "Main Campus", "Completed", 12, "Regular Noon Shuttle"))
-            tripLogsList.add(TripLog("2", "John Smith", "5", "2025-07-21 09:30 AM", "2025-07-21 10:30 AM", "East Campus", "In Progress", 8, "Express Route"))
+
+            tripLogsList.add(
+                TripLog(
+                    "1",
+                    "Jane Doe",
+                    "3",
+                    "2025-07-21 08:00 AM",
+                    "2025-07-21 09:00 AM",
+                    "Main Campus",
+                    "Completed",
+                    12,
+                    "Regular Noon Shuttle",
+                    createDefaultSeats()
+                )
+            )
+
+            tripLogsList.add(
+                TripLog(
+                    "2",
+                    "John Smith",
+                    "5",
+                    "2025-07-21 09:30 AM",
+                    "2025-07-21 10:30 AM",
+                    "East Campus",
+                    "In Progress",
+                    8,
+                    "Express Route",
+                    createDefaultSeats()
+                )
+            )
         }
     }
 
