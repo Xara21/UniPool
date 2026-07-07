@@ -160,6 +160,8 @@ class DriverPassengersActivity : AppCompatActivity() {
 
         var passengerNumber = 1
 
+        val seatMap = trip.seats.associateBy { it.id }
+
         for (seat in trip.seats) {
 
             if (seat.status != SeatStatus.OCCUPIED) {
@@ -323,7 +325,53 @@ class DriverPassengersActivity : AppCompatActivity() {
                 }
 
                 "In Progress" -> {
-                    trip.status = "Completed"
+
+                    val occupied =
+                        trip.seats.count { it.status == SeatStatus.OCCUPIED }
+
+                    val reserved =
+                        trip.seats.count { it.status == SeatStatus.RESERVED }
+
+                    val available =
+                        trip.seats.count { it.status == SeatStatus.AVAILABLE }
+
+                    AlertDialog.Builder(this)
+                        .setTitle("Complete Trip?")
+                        .setMessage(
+                            """
+Driver: ${trip.driverName}
+
+Destination: ${trip.destination}
+
+Occupied: $occupied
+Reserved: $reserved
+Available: $available
+
+This action cannot be undone.
+            """.trimIndent()
+                        )
+                        .setNegativeButton("Cancel", null)
+
+                        .setPositiveButton("Complete Trip") { _, _ ->
+
+                            trip.status = "Completed"
+
+                            txtCurrentStatus.text = trip.status
+
+                            refreshStatusCard()
+
+                            TripManager.saveToStorage(this)
+
+                            Toast.makeText(
+                                this,
+                                "Trip completed successfully.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        .show()
+
+                    return@setOnClickListener
                 }
 
                 else -> return@setOnClickListener
@@ -341,12 +389,29 @@ class DriverPassengersActivity : AppCompatActivity() {
 
         val scrollView = ScrollView(this)
 
-        val grid = GridLayout(this).apply {
-            columnCount = 5
-            useDefaultMargins = true
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(24,24,24,24)
         }
 
-        scrollView.addView(grid)
+        scrollView.addView(container)
+
+        val seatRows = mutableListOf<LinearLayout>()
+
+        repeat(4) {
+
+            seatRows.add(
+                LinearLayout(this).apply {
+
+                    orientation = LinearLayout.HORIZONTAL
+
+                    gravity = Gravity.CENTER
+
+                    setPadding(0,16,0,16)
+
+                }
+            )
+        }
 
         for (seat in trip.seats) {
 
@@ -438,9 +503,49 @@ class DriverPassengersActivity : AppCompatActivity() {
                 refreshSeatCounters()
 
                 TripManager.saveToStorage(this)
+
+
             }
 
-            grid.addView(button)
+            val rowIndex =
+                when (seat.id.first()) {
+
+                    'A' -> 0
+                    'B' -> 1
+                    'C' -> 2
+                    else -> 3
+                }
+
+            seatRows[rowIndex].addView(button)
+
+            if (seat.id.endsWith("2")) {
+
+                val aisle = TextView(this).apply {
+
+                    text = "     "
+
+                    width = 90
+                }
+
+                seatRows[rowIndex].addView(aisle)
+            }
+        }
+
+        val title = TextView(this).apply {
+
+            text = "🚌 Shuttle Seat Layout"
+
+            textSize = 18f
+
+            gravity = Gravity.CENTER
+
+            setPadding(0,0,0,24)
+        }
+
+        container.addView(title)
+
+        for (row in seatRows) {
+            container.addView(row)
         }
 
         AlertDialog.Builder(this)
