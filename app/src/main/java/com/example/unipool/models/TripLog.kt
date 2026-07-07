@@ -22,4 +22,18 @@ data class TripLog(
 
     val seats: MutableList<Seat> = mutableListOf()
 
-)
+) {
+
+    fun occupiedCount(): Int {
+        return seats.count { it.status == SeatStatus.OCCUPIED }
+    }
+
+    fun reservedCount(): Int {
+        return seats.count { it.status == SeatStatus.RESERVED }
+    }
+
+    fun availableCount(): Int {
+        return seats.count { it.status == SeatStatus.AVAILABLE }
+    }
+
+}

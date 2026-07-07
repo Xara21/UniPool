@@ -13,6 +13,11 @@ import android.widget.ScrollView
 import android.graphics.Color
 import android.view.Gravity
 import android.widget.TableRow
+import android.content.Intent
+import androidx.activity.OnBackPressedCallback
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.models.TripLog
 import com.example.unipool.models.SeatStatus
@@ -21,6 +26,9 @@ class DriverPassengersActivity : AppCompatActivity() {
 
     private lateinit var panelStatusCard: LinearLayout
 
+    private lateinit var drawerLayout: DrawerLayout
+
+    private lateinit var navigationView: NavigationView
     private lateinit var txtCurrentStatus: TextView
     private lateinit var txtDriverName: TextView
     private lateinit var txtDepartureTime: TextView
@@ -40,8 +48,6 @@ class DriverPassengersActivity : AppCompatActivity() {
 
     private var currentTrip: TripLog? = null
 
-    private var currentStatusState = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
             super.onCreate(savedInstanceState)
@@ -49,6 +55,8 @@ class DriverPassengersActivity : AppCompatActivity() {
             setContentView(R.layout.activity_driver_passengers)
 
             initializeViews()
+
+            setupDrawer()
 
             TripManager.loadFromStorage(this)
 
@@ -70,6 +78,72 @@ class DriverPassengersActivity : AppCompatActivity() {
             setupButtons()
         }
 
+    private fun setupDrawer() {
+
+        btnHamburger.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        navigationView.setCheckedItem(R.id.nav_passengers)
+
+        navigationView.setNavigationItemSelectedListener { item ->
+
+            when (item.itemId) {
+
+                R.id.nav_home ->
+                    startActivity(Intent(this, DriverHomeActivity::class.java))
+
+                R.id.nav_departures ->
+                    startActivity(Intent(this, DriverDeparturesActivity::class.java))
+
+                R.id.nav_passengers ->
+                    drawerLayout.closeDrawer(GravityCompat.START)
+
+                R.id.nav_triplogs ->
+                    startActivity(Intent(this, DriverTripLogsActivity::class.java))
+
+                R.id.nav_messages ->
+                    startActivity(Intent(this, DriverMessagesActivity::class.java))
+
+                R.id.nav_profile ->
+                    startActivity(Intent(this, DriverProfileActivity::class.java))
+
+                R.id.nav_logout -> {
+
+                    val intent = Intent(this, LoginActivity::class.java).apply {
+                        flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK or
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+
+                    startActivity(intent)
+                    finish()
+                }
+            }
+
+            drawerLayout.closeDrawer(GravityCompat.START)
+
+            true
+        }
+
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+
+                override fun handleOnBackPressed() {
+
+                    if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+
+                        drawerLayout.closeDrawer(GravityCompat.START)
+
+                    } else {
+
+                        finish()
+                    }
+                }
+            }
+        )
+    }
 
     private fun refreshPassengerManifest() {
 
@@ -109,7 +183,8 @@ class DriverPassengersActivity : AppCompatActivity() {
                     1.2f
                 )
 
-            txtPassenger.text = "Passenger $passengerNumber"
+            txtPassenger.text =
+                seat.passengerName ?: "Unknown Passenger"
 
             txtPassenger.setPadding(8,16,8,16)
 
@@ -193,11 +268,48 @@ class DriverPassengersActivity : AppCompatActivity() {
 
         btnSelectTrip.setOnClickListener {
 
-            Toast.makeText(
-                this,
-                "Trip selection will be added next.",
-                Toast.LENGTH_SHORT
-            ).show()
+            if (TripManager.tripLogsList.isEmpty()) {
+
+                Toast.makeText(
+                    this,
+                    "No trips available.",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
+            val tripDescriptions =
+                TripManager.tripLogsList.map {
+
+                    "Trip #${it.tripId}\n" +
+                            "${it.destination}\n" +
+                            "${it.departureTime}\n" +
+                            "Status: ${it.status}"
+
+                }.toTypedArray()
+
+            AlertDialog.Builder(this)
+                .setTitle("Select Trip")
+                .setItems(tripDescriptions) { _, which ->
+
+                    currentTrip =
+                        TripManager.tripLogsList[which]
+
+                    TripManager.currentTrip =
+                        currentTrip
+
+                    loadTripInformation()
+
+                    refreshSeatCounters()
+
+                    Toast.makeText(
+                        this,
+                        "Trip #${currentTrip!!.tripId} selected.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                .show()
         }
 
         btnActionTrip.setOnClickListener {
@@ -207,23 +319,17 @@ class DriverPassengersActivity : AppCompatActivity() {
             when (trip.status) {
 
                 "Scheduled" -> {
-
                     trip.status = "In Progress"
-
-                    btnActionTrip.text = "End Trip"
                 }
 
                 "In Progress" -> {
-
                     trip.status = "Completed"
-
-                    btnActionTrip.text = "Trip Completed"
-
-                    btnActionTrip.isEnabled = false
                 }
+
+                else -> return@setOnClickListener
             }
 
-            txtCurrentStatus.text = trip.status
+            refreshStatusCard()
 
             TripManager.saveToStorage(this)
         }
@@ -255,47 +361,83 @@ class DriverPassengersActivity : AppCompatActivity() {
 
             fun refreshSeatButton() {
 
+                val subtitle =
+                    when (seat.status) {
+
+                        SeatStatus.AVAILABLE ->
+                            "Available"
+
+                        SeatStatus.RESERVED ->
+                            seat.passengerName ?: "Reserved"
+
+                        SeatStatus.OCCUPIED ->
+                            seat.passengerName ?: "Occupied"
+                    }
+
+                button.text =
+                    when (seat.status) {
+
+                        SeatStatus.AVAILABLE ->
+                            "🔴\n${seat.id}\n$subtitle"
+
+                        SeatStatus.RESERVED ->
+                            "🟡\n${seat.id}\n$subtitle"
+
+                        SeatStatus.OCCUPIED ->
+                            "🟢\n${seat.id}\n$subtitle"
+                    }
+
+                button.textSize = 10f
+
                 when (seat.status) {
 
-                    SeatStatus.AVAILABLE -> {
-                        button.text = "🔴\n${seat.id}"
+                    SeatStatus.AVAILABLE ->
                         button.setBackgroundColor(Color.parseColor("#F44336"))
-                    }
 
-                    SeatStatus.RESERVED -> {
-                        button.text = "🟡\n${seat.id}"
+                    SeatStatus.RESERVED ->
                         button.setBackgroundColor(Color.parseColor("#FFC107"))
-                    }
 
-                    SeatStatus.OCCUPIED -> {
-                        button.text = "🟢\n${seat.id}"
+                    SeatStatus.OCCUPIED ->
                         button.setBackgroundColor(Color.parseColor("#4CAF50"))
-                    }
                 }
+
+                trip.passengerCount =
+                    trip.seats.count {
+                        it.status == SeatStatus.OCCUPIED
+                    }
             }
 
             refreshSeatButton()
 
             button.setOnClickListener {
 
-                seat.status =
-                    when (seat.status) {
+                when (seat.status) {
 
-                        SeatStatus.AVAILABLE ->
-                            SeatStatus.RESERVED
-
-                        SeatStatus.RESERVED ->
-                            SeatStatus.OCCUPIED
-
-                        SeatStatus.OCCUPIED ->
-                            SeatStatus.AVAILABLE
+                    SeatStatus.AVAILABLE -> {
+                        seat.status = SeatStatus.RESERVED
                     }
+
+                    SeatStatus.RESERVED -> {
+                        seat.status = SeatStatus.OCCUPIED
+
+                        seat.passengerName =
+                            "Passenger ${seat.id}"
+                    }
+
+                    SeatStatus.OCCUPIED -> {
+                        seat.status = SeatStatus.AVAILABLE
+
+                        seat.passengerName = null
+                    }
+                }
 
                 refreshSeatButton()
 
                 refreshPassengerManifest()
 
                 refreshSeatCounters()
+
+                TripManager.saveToStorage(this)
             }
 
             grid.addView(button)
@@ -308,11 +450,19 @@ class DriverPassengersActivity : AppCompatActivity() {
 
                 TripManager.saveToStorage(this)
 
+                loadTripInformation()
+
             }
             .show()
     }
 
     private fun initializeViews() {
+
+        drawerLayout =
+            findViewById(R.id.drawerLayout)
+
+        navigationView =
+            findViewById(R.id.navigationView)
 
         panelStatusCard =
             findViewById(R.id.panelStatusCard)
@@ -364,8 +514,48 @@ class DriverPassengersActivity : AppCompatActivity() {
         txtCurrentStatus.text = trip.status
 
         refreshPassengerManifest()
-
         refreshSeatCounters()
+        refreshStatusCard()
+    }
+
+    private fun refreshStatusCard() {
+
+        val trip = currentTrip ?: return
+
+        txtCurrentStatus.text = trip.status
+
+        when (trip.status) {
+
+            "Scheduled" -> {
+
+                panelStatusCard.setBackgroundColor(
+                    Color.parseColor("#FFEB3B")
+                )
+
+                btnActionTrip.text = "Start Trip"
+                btnActionTrip.isEnabled = true
+            }
+
+            "In Progress" -> {
+
+                panelStatusCard.setBackgroundColor(
+                    Color.parseColor("#4CAF50")
+                )
+
+                btnActionTrip.text = "End Trip"
+                btnActionTrip.isEnabled = true
+            }
+
+            "Completed" -> {
+
+                panelStatusCard.setBackgroundColor(
+                    Color.parseColor("#2196F3")
+                )
+
+                btnActionTrip.text = "Trip Completed"
+                btnActionTrip.isEnabled = false
+            }
+        }
     }
 
 }
