@@ -47,6 +47,14 @@
         <activity android:name=".DriverMessagesActivity" />
         <activity android:name=".DriverProfileActivity" />
 
+        <!-- Student -->
+
+        <activity android:name=".student.StudentHomeActivity" />
+        <activity android:name=".student.StudentReserveSeatActivity" />
+        <activity android:name=".student.StudentScheduleActivity" />
+        <activity android:name=".student.StudentMessagesActivity" />
+        <activity android:name=".student.StudentHistoryActivity" />
+
     </application>
 
 </manifest>

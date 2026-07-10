@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.unipool.student.StudentHomeActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -69,13 +70,24 @@ class LoginActivity : AppCompatActivity() {
             }
 
             "Student" -> {
-                // TODO: Student Dashboard
-                Toast.makeText(this, "Student Dashboard Coming Soon", Toast.LENGTH_SHORT).show()
+
+                startActivity(
+                    Intent(
+                        this,
+                        StudentHomeActivity::class.java
+                    )
+                )
+
+                finish()
             }
 
             "Staff" -> {
-                // TODO: Staff Dashboard
-                Toast.makeText(this, "Staff Dashboard Coming Soon", Toast.LENGTH_SHORT).show()
+
+                Toast.makeText(
+                    this,
+                    "Staff module coming soon",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             "Admin" -> {
