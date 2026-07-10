@@ -30,6 +30,12 @@ class StudentReserveSeatActivity : AppCompatActivity() {
 
     private var currentTrip: TripLog? = null
 
+    private var selectedSeatIndex = -1
+
+    private val currentStudentId = "STU001"
+
+    private val currentStudentName = "John Student"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,6 +48,10 @@ class StudentReserveSeatActivity : AppCompatActivity() {
         currentTrip = TripManager.currentTrip
 
         loadTripInformation()
+
+        btnSelectTrip.setOnClickListener {
+            reserveSelectedSeat()
+        }
     }
 
     private fun initializeViews() {
@@ -83,6 +93,8 @@ class StudentReserveSeatActivity : AppCompatActivity() {
         refreshSeatCounters()
 
         refreshStatusCard()
+
+        loadSeatGrid()
     }
 
     private fun refreshSeatCounters() {
@@ -131,6 +143,135 @@ class StudentReserveSeatActivity : AppCompatActivity() {
                     Color.parseColor("#2196F3")
                 )
             }
+        }
+    }
+
+
+    private fun reserveSelectedSeat() {
+
+        val trip = currentTrip ?: return
+
+        if (selectedSeatIndex == -1) {
+
+            android.widget.Toast.makeText(
+                this,
+                "Please select a seat first.",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        // Check if this student already has a reservation
+        val existingSeat = trip.seats.find {
+
+            it.passengerId == currentStudentId &&
+                    it.status == SeatStatus.RESERVED
+        }
+
+        if (existingSeat != null) {
+
+            android.widget.Toast.makeText(
+                this,
+                "You already reserved seat ${existingSeat.id}",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
+
+        val seat = trip.seats[selectedSeatIndex]
+
+        if (seat.status != SeatStatus.AVAILABLE) {
+
+            android.widget.Toast.makeText(
+                this,
+                "Seat is no longer available.",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        seat.status = SeatStatus.RESERVED
+
+        seat.passengerId = currentStudentId
+
+        seat.passengerName = currentStudentName
+
+        seat.passengerRole = com.example.unipool.models.PassengerRole.STUDENT
+
+        TripManager.saveToStorage(this)
+
+        refreshSeatCounters()
+
+        loadSeatGrid()
+
+        android.widget.Toast.makeText(
+            this,
+            "Seat ${seat.id} reserved!",
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun loadSeatGrid() {
+
+        val trip = currentTrip ?: return
+
+        gridSeats.removeAllViews()
+
+        for (seat in trip.seats) {
+
+            val button = Button(this)
+
+            button.text = seat.id
+
+            button.textSize = 12f
+
+            button.setPadding(4,4,4,4)
+
+            val params = GridLayout.LayoutParams()
+
+            params.width = 140
+            params.height = 140
+
+            params.setMargins(8,8,8,8)
+
+            button.layoutParams = params
+
+            when (seat.status) {
+
+                SeatStatus.AVAILABLE ->
+                    button.setBackgroundColor(Color.RED)
+
+                SeatStatus.RESERVED ->
+                    button.setBackgroundColor(Color.YELLOW)
+
+                SeatStatus.OCCUPIED ->
+                    button.setBackgroundColor(Color.GREEN)
+            }
+
+            if (trip.seats.indexOf(seat) == selectedSeatIndex) {
+
+                button.setBackgroundColor(Color.BLUE)
+
+                button.setTextColor(Color.WHITE)
+            }
+
+            button.setOnClickListener {
+
+                selectedSeatIndex = trip.seats.indexOf(seat)
+
+                android.widget.Toast.makeText(
+                    this,
+                    "Selected ${seat.id}",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+
+                loadSeatGrid()
+            }
+
+            gridSeats.addView(button)
         }
     }
 }

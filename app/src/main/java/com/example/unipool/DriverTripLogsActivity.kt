@@ -19,6 +19,8 @@ import com.example.unipool.models.TripLog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.appcompat.app.AlertDialog
+import com.example.unipool.models.SeatStatus
 
 class DriverTripLogsActivity : AppCompatActivity() {
 
@@ -138,42 +140,115 @@ class DriverTripLogsActivity : AppCompatActivity() {
     }
 
     private fun showTripDetailsDialog(trip: TripLog) {
-        val detailsMessage = """
-            📍 Destination: ${trip.destination}
-            📋 Trip Type: ${trip.tripType}
-            👤 Driver Name: ${trip.driverName}
-            🚌 Shuttle Number: ${trip.shuttleId}
-            ⏱️ Departure: ${trip.departureTime}
-            🏁 Arrival Time: ${trip.arrivalTime}
-            🚦 Current Status: ${trip.status}
-            👥 Total Passengers: ${trip.passengerCount} / 30
-        """.trimIndent()
 
-        val dialogBuilder = androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Trip Summary — ID #${trip.tripId}")
-            .setMessage(detailsMessage)
-            .setNegativeButton("Close") { dialog, _ ->
-                dialog.dismiss()
-            }
+        val occupied = trip.seats.count { it.status == SeatStatus.OCCUPIED }
+        val reserved = trip.seats.count { it.status == SeatStatus.RESERVED }
+        val available = trip.seats.count { it.status == SeatStatus.AVAILABLE }
 
-        if (trip.status.equals("In Progress", ignoreCase = true)) {
-            dialogBuilder.setPositiveButton("Complete Trip") { dialog, _ ->
-                val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
-                val index = TripManager.tripLogsList.indexOfFirst { it.tripId == trip.tripId }
+        val passengerList = StringBuilder()
 
-                if (index != -1) {
-                    val updatedTrip = TripManager.tripLogsList[index].copy(
-                        status = "Completed",
-                        arrivalTime = currentTime
-                    )
-                    TripManager.updateTrip(this, index, updatedTrip)
-                    populateTripLogsTable()
-                    Toast.makeText(this, "Trip #${trip.tripId} marked as Completed!", Toast.LENGTH_SHORT).show()
-                }
-                dialog.dismiss()
+        trip.seats.forEach { seat ->
+
+            if (seat.status != SeatStatus.AVAILABLE) {
+
+                passengerList.append(
+                    "${seat.id}    ${seat.passengerName ?: "Unknown"}    ${
+                        if (seat.status == SeatStatus.OCCUPIED)
+                            "On Board"
+                        else
+                            "Reserved"
+                    }\n"
+                )
             }
         }
 
-        dialogBuilder.create().show()
+        if (passengerList.isEmpty()) {
+            passengerList.append("No passengers.")
+        }
+
+        val details = """
+Trip #${trip.tripId}
+
+Driver
+${trip.driverName}
+
+Shuttle
+${trip.shuttleId}
+
+Destination
+${trip.destination}
+
+Trip Type
+${trip.tripType}
+
+Departure
+${trip.departureTime}
+
+Arrival
+${trip.arrivalTime}
+
+Status
+${trip.status}
+
+----------------------------
+
+Occupied : $occupied
+Reserved : $reserved
+Available : $available
+
+----------------------------
+
+Passenger Manifest
+
+$passengerList
+
+    """.trimIndent()
+
+        val builder = AlertDialog.Builder(this)
+            .setTitle("Trip Details")
+            .setMessage(details)
+            .setNegativeButton("Close", null)
+
+        if (trip.status == "In Progress") {
+
+            builder.setPositiveButton("Complete Trip") { _, _ ->
+
+                val currentTime =
+                    SimpleDateFormat(
+                        "hh:mm a",
+                        Locale.getDefault()
+                    ).format(Date())
+
+                val index =
+                    TripManager.tripLogsList.indexOfFirst {
+                        it.tripId == trip.tripId
+                    }
+
+                if (index != -1) {
+
+                    val updatedTrip =
+                        TripManager.tripLogsList[index].copy(
+                            status = "Completed",
+                            arrivalTime = currentTime
+                        )
+
+                    TripManager.updateTrip(
+                        this,
+                        index,
+                        updatedTrip
+                    )
+
+                    populateTripLogsTable()
+
+                    Toast.makeText(
+                        this,
+                        "Trip Completed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
+        builder.show()
     }
 }

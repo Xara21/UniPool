@@ -183,7 +183,9 @@ class DriverDeparturesActivity : AppCompatActivity() {
 
         progressPassengers.progress = passengerCount
 
-        seatManager.generateSeats(passengerCount)
+        if (seatManager.seats.isEmpty()) {
+            seatManager.generateSeats(passengerCount)
+        }
 
         updateSeatCounters()
     }
@@ -284,17 +286,41 @@ class DriverDeparturesActivity : AppCompatActivity() {
         }
 
         btnNow.setOnClickListener {
+
             val calendar = Calendar.getInstance()
+
             val isPm = calendar.get(Calendar.AM_PM) == Calendar.PM
+
             var hour = calendar.get(Calendar.HOUR)
+
             if (hour == 0) hour = 12
+
             val minute = calendar.get(Calendar.MINUTE)
 
-            val roundedMinuteIndex = Math.round(minute.toFloat() / 5f).toInt() % 12
+            val roundedMinute = ((minute + 2) / 5) * 5
 
-            spinnerHour.setSelection(hour - 1)
-            spinnerMinute.setSelection(roundedMinuteIndex)
-            spinnerAmPm.setSelection(if (isPm) 1 else 0)
+            var finalHour = hour
+            var finalMinute = roundedMinute
+            var finalIsPm = isPm
+
+            if (roundedMinute == 60) {
+
+                finalMinute = 0
+                finalHour++
+
+                if (finalHour == 12) {
+                    finalIsPm = !finalIsPm
+                }
+
+                if (finalHour == 13)
+                    finalHour = 1
+            }
+
+            spinnerHour.setSelection(finalHour - 1)
+
+            spinnerMinute.setSelection(finalMinute / 5)
+
+            spinnerAmPm.setSelection(if (finalIsPm) 1 else 0)
         }
 
         btnStartTrip.setOnClickListener {

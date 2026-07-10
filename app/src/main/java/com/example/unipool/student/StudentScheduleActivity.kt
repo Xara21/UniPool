@@ -1,6 +1,7 @@
 package com.example.unipool.student
 
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.R
 
@@ -8,6 +9,12 @@ class StudentScheduleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_student_schedule)
+
+        setContentView(R.layout.activity_student_placeholder)
+
+        findViewById<TextView>(R.id.txtTitle).text = "Schedule"
+
+        findViewById<TextView>(R.id.txtSubtitle).text =
+            "Trip schedules will appear here."
     }
 }

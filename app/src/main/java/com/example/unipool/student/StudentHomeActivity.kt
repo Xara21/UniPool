@@ -12,6 +12,8 @@ import com.example.unipool.LoginActivity
 import com.example.unipool.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.example.unipool.PassengerAvailableTripsActivity
+import com.example.unipool.PassengerSeatReservationActivity
 
 class StudentHomeActivity : AppCompatActivity() {
 
@@ -63,7 +65,7 @@ class StudentHomeActivity : AppCompatActivity() {
             startActivity(
                 Intent(
                     this,
-                    StudentReserveSeatActivity::class.java
+                    PassengerAvailableTripsActivity::class.java
                 )
             )
         }
@@ -119,7 +121,7 @@ class StudentHomeActivity : AppCompatActivity() {
                     startActivity(
                         Intent(
                             this,
-                            StudentReserveSeatActivity::class.java
+                            PassengerAvailableTripsActivity::class.java
                         )
                     )
                 }

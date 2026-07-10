@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.student.StudentHomeActivity
+import com.example.unipool.models.CurrentPassenger
+import com.example.unipool.models.PassengerRole
 
 class LoginActivity : AppCompatActivity() {
 
@@ -71,6 +73,14 @@ class LoginActivity : AppCompatActivity() {
 
             "Student" -> {
 
+                CurrentPassenger.id = username
+
+                CurrentPassenger.username = username
+
+                CurrentPassenger.email = email
+
+                CurrentPassenger.role = PassengerRole.STUDENT
+
                 startActivity(
                     Intent(
                         this,
@@ -83,11 +93,14 @@ class LoginActivity : AppCompatActivity() {
 
             "Staff" -> {
 
-                Toast.makeText(
-                    this,
-                    "Staff module coming soon",
-                    Toast.LENGTH_SHORT
-                ).show()
+                startActivity(
+                    Intent(
+                        this,
+                        StaffHomeActivity::class.java
+                    )
+                )
+
+                finish()
             }
 
             "Admin" -> {

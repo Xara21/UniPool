@@ -47,6 +47,12 @@
         <activity android:name=".DriverMessagesActivity" />
         <activity android:name=".DriverProfileActivity" />
 
+        <!-- Staff -->
+
+        <activity android:name=".StaffAvailableTripsActivity"/>
+        <activity android:name=".StaffSeatReservationActivity"/>
+        <activity android:name=".StaffHomeActivity"/>
+
         <!-- Student -->
 
         <activity android:name=".student.StudentHomeActivity" />
@@ -54,6 +60,11 @@
         <activity android:name=".student.StudentScheduleActivity" />
         <activity android:name=".student.StudentMessagesActivity" />
         <activity android:name=".student.StudentHistoryActivity" />
+
+        <activity android:name=".PassengerAvailableTripsActivity"/>
+        <activity android:name=".PassengerSeatReservationActivity"/>
+
+
 
     </application>
 

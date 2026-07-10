@@ -164,7 +164,10 @@ class DriverPassengersActivity : AppCompatActivity() {
 
         for (seat in trip.seats) {
 
-            if (seat.status != SeatStatus.OCCUPIED) {
+            if (
+                seat.status != SeatStatus.OCCUPIED &&
+                seat.status != SeatStatus.RESERVED
+            ) {
                 continue
             }
 
@@ -191,6 +194,23 @@ class DriverPassengersActivity : AppCompatActivity() {
             txtPassenger.setPadding(8,16,8,16)
 
             val txtSeat = TextView(this)
+            val txtStatus = TextView(this)
+
+            txtStatus.layoutParams =
+                TableRow.LayoutParams(
+                    0,
+                    TableRow.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+
+            txtStatus.gravity = Gravity.CENTER
+
+            txtStatus.text =
+                when (seat.status) {
+                    SeatStatus.RESERVED -> "Reserved"
+                    SeatStatus.OCCUPIED -> "On Board"
+                    else -> "-"
+                }
 
             txtSeat.layoutParams =
                 TableRow.LayoutParams(
@@ -203,29 +223,74 @@ class DriverPassengersActivity : AppCompatActivity() {
 
             txtSeat.text = seat.id
 
-            val btnNotify = Button(this)
+            val btnAction = Button(this)
 
-            btnNotify.layoutParams =
+            btnAction.layoutParams =
                 TableRow.LayoutParams(
                     0,
                     TableRow.LayoutParams.WRAP_CONTENT,
                     1f
                 )
 
-            btnNotify.text = "Notify"
+            if (seat.status == SeatStatus.RESERVED) {
 
-            btnNotify.setOnClickListener {
+                btnAction.text = "Approve"
 
-                Toast.makeText(
-                    this,
-                    "Notification sent to Passenger $passengerNumber",
-                    Toast.LENGTH_SHORT
-                ).show()
+                btnAction.setOnClickListener {
+
+                    AlertDialog.Builder(this)
+                        .setTitle("Passenger Boarding")
+                        .setMessage(
+                            "Confirm that ${seat.passengerName} has boarded the shuttle?"
+                        )
+                        .setPositiveButton("Confirm") { _, _ ->
+
+                            seat.status = SeatStatus.OCCUPIED
+
+                            TripManager.saveToStorage(this)
+
+                            refreshPassengerManifest()
+                            refreshSeatCounters()
+
+                            Toast.makeText(
+                                this,
+                                "${seat.passengerName} is now On Board.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
+                }
+
+            } else {
+
+                btnAction.text = "Notify"
+
+                btnAction.setOnClickListener {
+
+                    AlertDialog.Builder(this)
+                        .setTitle("Notify Passenger")
+                        .setMessage(
+                            "Send boarding reminder to ${seat.passengerName}?"
+                        )
+                        .setPositiveButton("Send") { _, _ ->
+
+                            Toast.makeText(
+                                this,
+                                "Boarding reminder sent.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
+                }
             }
 
             row.addView(txtPassenger)
             row.addView(txtSeat)
-            row.addView(btnNotify)
+            row.addView(txtStatus)
+            row.addView(btnAction)
 
             tablePassengerManifest.addView(row)
 
@@ -479,20 +544,37 @@ This action cannot be undone.
                 when (seat.status) {
 
                     SeatStatus.AVAILABLE -> {
-                        seat.status = SeatStatus.RESERVED
+
+                        Toast.makeText(
+                            this,
+                            "Students reserve seats themselves.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
-                    SeatStatus.RESERVED -> {
-                        seat.status = SeatStatus.OCCUPIED
-
-                        seat.passengerName =
-                            "Passenger ${seat.id}"
-                    }
-
+                    SeatStatus.RESERVED,
                     SeatStatus.OCCUPIED -> {
-                        seat.status = SeatStatus.AVAILABLE
 
-                        seat.passengerName = null
+                        AlertDialog.Builder(this)
+                            .setTitle("Clear Seat?")
+                            .setMessage(
+                                "Remove ${seat.passengerName ?: "this passenger"} from ${seat.id}?"
+                            )
+                            .setPositiveButton("Yes") { _, _ ->
+
+                                seat.status = SeatStatus.AVAILABLE
+                                seat.passengerId = null
+                                seat.passengerName = null
+                                seat.passengerRole = null
+
+                                TripManager.saveToStorage(this)
+
+                                refreshSeatButton()
+                                refreshPassengerManifest()
+                                refreshSeatCounters()
+                            }
+                            .setNegativeButton("Cancel", null)
+                            .show()
                     }
                 }
 
