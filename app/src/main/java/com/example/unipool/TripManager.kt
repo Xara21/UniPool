@@ -271,4 +271,46 @@ object TripManager {
 
         return sdf.format(Date())
     }
+
+    fun hasExistingReservation(
+        passengerId: String
+    ): Boolean {
+
+        return tripLogsList.any { trip ->
+
+            trip.seats.any { seat ->
+
+                seat.passengerId == passengerId &&
+                        seat.status == SeatStatus.RESERVED
+
+            }
+
+        }
+
+    }
+
+    fun removeReservation(
+        passengerId: String
+    ) {
+
+        tripLogsList.forEach { trip ->
+
+            trip.seats.forEach { seat ->
+
+                if (
+                    seat.passengerId == passengerId &&
+                    seat.status == SeatStatus.RESERVED
+                ) {
+
+                    seat.status = SeatStatus.AVAILABLE
+                    seat.passengerId = null
+                    seat.passengerName = null
+                    seat.passengerRole = null
+                }
+
+            }
+
+        }
+
+    }
 }

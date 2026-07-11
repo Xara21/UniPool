@@ -72,12 +72,14 @@ class PassengerAvailableTripsActivity : AppCompatActivity() {
 
                 TripManager.currentTrip = trip
 
-                Intent(
+                val intent = Intent(
                     this,
                     PassengerSeatReservationActivity::class.java
-                ).apply {
-                    putExtra("IS_STAFF", false)
-                }
+                )
+
+                intent.putExtra("IS_STAFF", false)
+
+                startActivity(intent)
             }
 
             card.addView(title)

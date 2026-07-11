@@ -60,6 +60,7 @@
         <activity android:name=".student.StudentScheduleActivity" />
         <activity android:name=".student.StudentMessagesActivity" />
         <activity android:name=".student.StudentHistoryActivity" />
+        <activity android:name=".student.StudentNotificationsActivity"/>
 
         <activity android:name=".PassengerAvailableTripsActivity"/>
         <activity android:name=".PassengerSeatReservationActivity"/>

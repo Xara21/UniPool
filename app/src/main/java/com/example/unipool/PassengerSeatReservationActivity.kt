@@ -13,15 +13,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.R
 import com.example.unipool.TripManager
+import com.example.unipool.NotificationManager
 import com.example.unipool.models.PassengerRole
 import com.example.unipool.models.SeatStatus
 
-private val isStaff = intent.getBooleanExtra("IS_STAFF", false)
 
 class PassengerSeatReservationActivity : AppCompatActivity() {
 
+    private var isStaff = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        isStaff = intent.getBooleanExtra("IS_STAFF", false)
 
         showSeatLayout()
     }
@@ -104,7 +108,7 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
 
             btn.setOnClickListener {
 
-                if(seat.status!=SeatStatus.AVAILABLE){
+                if (seat.status != SeatStatus.AVAILABLE && !isStaff) {
 
                     Toast.makeText(
                         this,
@@ -126,6 +130,71 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
                     .setNegativeButton("Cancel",null)
 
                     .setPositiveButton("Reserve") { _, _ ->
+
+                        val passengerId =
+                            if (isStaff) "STA001"
+                            else "STU001"
+
+                        if (TripManager.hasExistingReservation(passengerId)) {
+
+                            if (!isStaff) {
+
+                                seat.status = SeatStatus.RESERVED
+                                seat.passengerName = "John Student"
+                                seat.passengerId = "STU001"
+                                seat.passengerRole = PassengerRole.STUDENT
+
+                            } else {
+
+                                when (seat.status) {
+
+                                    SeatStatus.AVAILABLE -> {
+
+                                        seat.status = SeatStatus.RESERVED
+                                        seat.passengerName = "Jane Staff"
+                                        seat.passengerId = "STA001"
+                                        seat.passengerRole = PassengerRole.STAFF
+                                    }
+
+                                    SeatStatus.RESERVED -> {
+
+                                        if (seat.passengerRole == PassengerRole.STUDENT) {
+
+                                            seat.passengerName = "Jane Staff"
+                                            seat.passengerId = "STA001"
+                                            seat.passengerRole = PassengerRole.STAFF
+
+                                            Toast.makeText(
+                                                this,
+                                                "Student reservation replaced.",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+
+                                        } else {
+
+                                            Toast.makeText(
+                                                this,
+                                                "Another staff already reserved this seat.",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+
+                                            return@setPositiveButton
+                                        }
+                                    }
+
+                                    SeatStatus.OCCUPIED -> {
+
+                                        Toast.makeText(
+                                            this,
+                                            "Passenger is already onboard.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                        return@setPositiveButton
+                                    }
+                                }
+                            }
+                        }
 
                         if (!isStaff) {
 
@@ -163,14 +232,17 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
                                     studentSeat.passengerName = null
                                     studentSeat.passengerRole = null
 
-                                    seat.status = SeatStatus.RESERVED
+                                    NotificationManager.add(
+                                        "Your reservation for Trip #${trip.tripId} was replaced because a staff member has priority."
+                                    )
+
                                     seat.passengerName = "Jane Staff"
                                     seat.passengerId = "STA001"
                                     seat.passengerRole = PassengerRole.STAFF
 
                                     Toast.makeText(
                                         this,
-                                        "Student reservation replaced by Staff priority.",
+                                        "Student reservation replaced.",
                                         Toast.LENGTH_LONG
                                     ).show()
 

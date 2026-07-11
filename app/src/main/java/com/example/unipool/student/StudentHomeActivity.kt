@@ -14,6 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.example.unipool.PassengerAvailableTripsActivity
 import com.example.unipool.PassengerSeatReservationActivity
+import com.example.unipool.student.StudentNotificationsActivity
 
 class StudentHomeActivity : AppCompatActivity() {
 
@@ -85,7 +86,7 @@ class StudentHomeActivity : AppCompatActivity() {
             startActivity(
                 Intent(
                     this,
-                    StudentMessagesActivity::class.java
+                    StudentNotificationsActivity::class.java
                 )
             )
         }
