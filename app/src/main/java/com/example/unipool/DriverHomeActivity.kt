@@ -31,13 +31,17 @@ class DriverHomeActivity : AppCompatActivity() {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
-        // Start New Trip button navigation to departures page
+        // Start New Trip
         btnStartTrip.setOnClickListener {
-            val intent = Intent(this, DriverDeparturesActivity::class.java)
-            startActivity(intent)
+            startActivity(
+                Intent(
+                    this,
+                    DriverDeparturesActivity::class.java
+                )
+            )
         }
 
-        // Drawer menu clicks
+        // Drawer menu
         navigationView.setNavigationItemSelectedListener { item ->
 
             when (item.itemId) {
@@ -48,33 +52,47 @@ class DriverHomeActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_departures -> {
-                    startActivity(Intent(this, DriverDeparturesActivity::class.java))
+                    startActivity(
+                        Intent(
+                            this,
+                            DriverDeparturesActivity::class.java
+                        )
+                    )
                     drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
 
                 R.id.nav_passengers -> {
-                    startActivity(Intent(this, DriverPassengersActivity::class.java))
+                    startActivity(
+                        Intent(
+                            this,
+                            DriverPassengersActivity::class.java
+                        )
+                    )
                     drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
 
                 R.id.nav_triplogs -> {
-                    startActivity(Intent(this, DriverTripLogsActivity::class.java))
+                    startActivity(
+                        Intent(
+                            this,
+                            DriverTripLogsActivity::class.java
+                        )
+                    )
                     drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
 
+                // UPDATED
                 R.id.nav_messages -> {
 
-                    val intent = Intent(
-                        this,
-                        ConversationListActivity::class.java
+                    startActivity(
+                        Intent(
+                            this,
+                            DriverMessagesActivity::class.java
+                        )
                     )
-
-                    intent.putExtra("IS_DRIVER", true)
-
-                    startActivity(intent)
 
                     drawerLayout.closeDrawer(GravityCompat.START)
 
@@ -82,16 +100,27 @@ class DriverHomeActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_profile -> {
-                    startActivity(Intent(this, DriverProfileActivity::class.java))
+                    startActivity(
+                        Intent(
+                            this,
+                            DriverProfileActivity::class.java
+                        )
+                    )
                     drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
 
                 R.id.nav_logout -> {
 
-                    val intent = Intent(this, LoginActivity::class.java)
+                    val intent =
+                        Intent(
+                            this,
+                            LoginActivity::class.java
+                        )
+
                     intent.flags =
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        Intent.FLAG_ACTIVITY_NEW_TASK or
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK
 
                     startActivity(intent)
                     finish()
@@ -103,19 +132,23 @@ class DriverHomeActivity : AppCompatActivity() {
             }
         }
 
-        // Handle Android Back button
-        onBackPressedDispatcher.addCallback(this,
+        // Android Back button
+        onBackPressedDispatcher.addCallback(
+            this,
             object : OnBackPressedCallback(true) {
 
                 override fun handleOnBackPressed() {
 
                     if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+
                         drawerLayout.closeDrawer(GravityCompat.START)
+
                     } else {
+
                         finish()
                     }
-
                 }
-            })
+            }
+        )
     }
 }

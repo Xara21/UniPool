@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import android.graphics.Color
-import android.view.LayoutInflater
 import android.widget.GridLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +11,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AlertDialog
 import com.example.unipool.managers.SeatManager
+import com.example.unipool.managers.TripManager
 import com.example.unipool.models.SeatStatus
 import com.example.unipool.models.TripLog
 import com.google.android.material.floatingactionbutton.FloatingActionButton

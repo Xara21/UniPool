@@ -6,8 +6,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.unipool.R
-import com.example.unipool.TripManager
+import com.example.unipool.managers.TripManager
 
 class PassengerAvailableTripsActivity : AppCompatActivity() {
 

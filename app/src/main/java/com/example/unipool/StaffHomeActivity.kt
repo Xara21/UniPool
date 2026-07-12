@@ -60,15 +60,14 @@ class StaffHomeActivity : AppCompatActivity() {
 
         btnMessages.setOnClickListener {
 
-            val intent = Intent(
-                this,
-                ConversationListActivity::class.java
+            startActivity(
+
+                Intent(
+                    this,
+                    StaffMessagesActivity::class.java
+                )
+
             )
-
-            intent.putExtra("IS_DRIVER", false)
-            intent.putExtra("IS_STAFF", true)
-
-            startActivity(intent)
         }
 
     }

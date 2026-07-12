@@ -7,7 +7,7 @@ import android.widget.GridLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.R
-import com.example.unipool.TripManager
+import com.example.unipool.managers.TripManager
 import com.example.unipool.models.TripLog
 import com.example.unipool.models.SeatStatus
 

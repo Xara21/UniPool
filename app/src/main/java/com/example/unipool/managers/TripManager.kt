@@ -1,10 +1,10 @@
-package com.example.unipool
+package com.example.unipool.managers
 
 import android.content.Context
+import com.example.unipool.models.PassengerRole
 import com.example.unipool.models.Seat
 import com.example.unipool.models.SeatStatus
 import com.example.unipool.models.TripLog
-import com.example.unipool.models.PassengerRole
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat

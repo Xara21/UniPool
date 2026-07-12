@@ -19,6 +19,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.unipool.managers.TripManager
 import com.example.unipool.models.TripLog
 import com.example.unipool.models.SeatStatus
 

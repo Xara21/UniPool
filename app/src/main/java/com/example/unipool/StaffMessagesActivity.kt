@@ -1,25 +1,21 @@
-package com.example.unipool.student
+package com.example.unipool
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.unipool.ChatActivity
-import com.example.unipool.ConversationManager
-import com.example.unipool.R
 
-class StudentMessagesActivity : AppCompatActivity() {
+class StaffMessagesActivity : AppCompatActivity() {
 
     private lateinit var layoutConversations: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_student_messages)
+        setContentView(R.layout.activity_staff_messages)
 
-        layoutConversations =
-            findViewById(R.id.layoutConversations)
+        layoutConversations = findViewById(R.id.layoutConversations)
 
         loadConversations()
     }
@@ -93,21 +89,13 @@ class StudentMessagesActivity : AppCompatActivity() {
 
             view.setOnClickListener {
 
-                val intent =
-                    Intent(
-                        this,
-                        ChatActivity::class.java
-                    )
-
-                intent.putExtra(
-                    "SENDER_ID",
-                    "STU001"
+                val intent = Intent(
+                    this,
+                    ChatActivity::class.java
                 )
 
-                intent.putExtra(
-                    "SENDER_NAME",
-                    "John Student"
-                )
+                intent.putExtra("SENDER_ID", "STF001")
+                intent.putExtra("SENDER_NAME", "Maria Staff")
 
                 intent.putExtra(
                     "RECEIVER_ID",

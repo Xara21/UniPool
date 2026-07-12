@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.models.Message
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.unipool.managers.MessageManager
 
 class ChatActivity : AppCompatActivity() {
 
@@ -49,18 +50,28 @@ class ChatActivity : AppCompatActivity() {
             if (text.isEmpty()) return@setOnClickListener
 
             val message = Message(
-                senderId,
-                senderName,
-                receiverId,
-                receiverName,
-                text,
-                SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss",
-                    Locale.getDefault()
-                ).format(Date())
+                senderId = senderId,
+                senderName = senderName,
+                receiverId = receiverId,
+                receiverName = receiverName,
+                message = text
             )
 
-            MessageManager.send(message)
+            MessageManager.sendMessage(message)
+
+            ConversationManager.updateConversation(
+
+                receiverId = receiverId,
+
+                receiverName = receiverName,
+
+                receiverRole = null,
+
+                lastMessage = text,
+
+                timestamp = message.timestamp
+
+            )
 
             etMessage.text.clear()
 
@@ -80,16 +91,52 @@ class ChatActivity : AppCompatActivity() {
 
         for (msg in conversation) {
 
-            val tv = TextView(this)
+            val isMine = msg.senderId == senderId
 
-            tv.text =
-                "${msg.senderName}: ${msg.message}"
+            val layoutId =
+                if (isMine)
+                    R.layout.item_chat_right
+                else
+                    R.layout.item_chat_left
 
-            tv.textSize = 18f
+            val bubble = layoutInflater.inflate(
+                layoutId,
+                layoutMessages,
+                false
+            )
 
-            tv.setPadding(10,10,10,10)
+            val txtMessage =
+                bubble.findViewById<TextView>(R.id.txtMessage)
 
-            layoutMessages.addView(tv)
+            val txtTime =
+                bubble.findViewById<TextView>(R.id.txtTime)
+
+            txtMessage.text = msg.message
+
+            txtTime.text =
+                formatTimestamp(msg.timestamp)
+
+            layoutMessages.addView(bubble)
         }
+
+        layoutMessages.post {
+
+            if (layoutMessages.parent is android.widget.ScrollView) {
+
+                (layoutMessages.parent as android.widget.ScrollView)
+                    .fullScroll(android.view.View.FOCUS_DOWN)
+            }
+
+        }
+    }
+
+    private fun formatTimestamp(timestamp: Long): String {
+
+        val sdf = SimpleDateFormat(
+            "h:mm a",
+            Locale.getDefault()
+        )
+
+        return sdf.format(Date(timestamp))
     }
 }

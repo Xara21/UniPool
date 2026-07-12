@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.appcompat.app.AlertDialog
+import com.example.unipool.managers.TripManager
 import com.example.unipool.models.SeatStatus
 
 class DriverTripLogsActivity : AppCompatActivity() {
