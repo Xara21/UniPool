@@ -13,7 +13,6 @@ import com.example.unipool.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.example.unipool.PassengerAvailableTripsActivity
-import com.example.unipool.PassengerSeatReservationActivity
 import com.example.unipool.student.StudentNotificationsActivity
 
 class StudentHomeActivity : AppCompatActivity() {
@@ -28,6 +27,7 @@ class StudentHomeActivity : AppCompatActivity() {
     private lateinit var btnReserveSeat: Button
     private lateinit var btnViewSchedule: Button
     private lateinit var btnMessages: Button
+    private lateinit var btnNotifications: Button
     private lateinit var btnHistory: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +56,8 @@ class StudentHomeActivity : AppCompatActivity() {
         btnReserveSeat = findViewById(R.id.btnReserveSeat)
         btnViewSchedule = findViewById(R.id.btnViewSchedule)
         btnMessages = findViewById(R.id.btnMessages)
+        btnNotifications =
+            findViewById(R.id.btnNotifications)
         btnHistory = findViewById(R.id.btnHistory)
     }
 
@@ -82,6 +84,16 @@ class StudentHomeActivity : AppCompatActivity() {
         }
 
         btnMessages.setOnClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    StudentMessagesActivity::class.java
+                )
+            )
+        }
+
+        btnNotifications.setOnClickListener {
 
             startActivity(
                 Intent(

@@ -183,9 +183,7 @@ class DriverDeparturesActivity : AppCompatActivity() {
 
         progressPassengers.progress = passengerCount
 
-        if (seatManager.seats.isEmpty()) {
-            seatManager.generateSeats(passengerCount)
-        }
+        seatManager.generateSeats(passengerCount)
 
         updateSeatCounters()
     }
