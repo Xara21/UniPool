@@ -66,8 +66,18 @@ class DriverHomeActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_messages -> {
-                    startActivity(Intent(this, DriverMessagesActivity::class.java))
+
+                    val intent = Intent(
+                        this,
+                        ConversationListActivity::class.java
+                    )
+
+                    intent.putExtra("IS_DRIVER", true)
+
+                    startActivity(intent)
+
                     drawerLayout.closeDrawer(GravityCompat.START)
+
                     true
                 }
 

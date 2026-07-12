@@ -50,7 +50,6 @@
         <!-- Staff -->
 
         <activity android:name=".StaffAvailableTripsActivity"/>
-        <activity android:name=".StaffSeatReservationActivity"/>
         <activity android:name=".StaffHomeActivity"/>
 
         <!-- Student -->
@@ -64,6 +63,8 @@
 
         <activity android:name=".PassengerAvailableTripsActivity"/>
         <activity android:name=".PassengerSeatReservationActivity"/>
+        <activity android:name=".ChatActivity"/>
+        <activity android:name=".ConversationListActivity"/>
 
 
 

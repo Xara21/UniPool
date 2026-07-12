@@ -14,6 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.example.unipool.PassengerAvailableTripsActivity
 import com.example.unipool.student.StudentNotificationsActivity
+import com.example.unipool.ConversationListActivity
 
 class StudentHomeActivity : AppCompatActivity() {
 
@@ -85,12 +86,14 @@ class StudentHomeActivity : AppCompatActivity() {
 
         btnMessages.setOnClickListener {
 
-            startActivity(
-                Intent(
-                    this,
-                    StudentMessagesActivity::class.java
-                )
+            val intent = Intent(
+                this,
+                ConversationListActivity::class.java
             )
+
+            intent.putExtra("IS_DRIVER", false)
+
+            startActivity(intent)
         }
 
         btnNotifications.setOnClickListener {
@@ -151,12 +154,14 @@ class StudentHomeActivity : AppCompatActivity() {
 
                 R.id.nav_messages -> {
 
-                    startActivity(
-                        Intent(
-                            this,
-                            StudentMessagesActivity::class.java
-                        )
+                    val intent = Intent(
+                        this,
+                        ConversationListActivity::class.java
                     )
+
+                    intent.putExtra("IS_DRIVER", false)
+
+                    startActivity(intent)
                 }
 
                 R.id.nav_history -> {

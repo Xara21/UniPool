@@ -109,7 +109,7 @@
                     android:id="@+id/btnMessages"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:text="Notifications"
+                    android:text=" Messages"
                     android:textAllCaps="false"
                     android:layout_marginBottom="10dp"/>
 

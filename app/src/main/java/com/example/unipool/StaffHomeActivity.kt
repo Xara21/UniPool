@@ -57,6 +57,20 @@ class StaffHomeActivity : AppCompatActivity() {
         btnReserveSeat.setOnClickListener {
             startActivity(Intent(this, StaffAvailableTripsActivity::class.java))
         }
+
+        btnMessages.setOnClickListener {
+
+            val intent = Intent(
+                this,
+                ConversationListActivity::class.java
+            )
+
+            intent.putExtra("IS_DRIVER", false)
+            intent.putExtra("IS_STAFF", true)
+
+            startActivity(intent)
+        }
+
     }
 
     private fun setupDrawer() {
@@ -73,6 +87,8 @@ class StaffHomeActivity : AppCompatActivity() {
 
                 R.id.nav_reserve ->
                     startActivity(Intent(this, StaffAvailableTripsActivity::class.java))
+
+
 
                 R.id.nav_logout -> {
 
