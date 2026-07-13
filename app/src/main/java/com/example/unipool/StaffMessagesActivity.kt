@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.example.unipool.managers.MessageManager
 import androidx.appcompat.app.AppCompatActivity
 
 class StaffMessagesActivity : AppCompatActivity() {
@@ -29,88 +30,73 @@ class StaffMessagesActivity : AppCompatActivity() {
 
         layoutConversations.removeAllViews()
 
-        val conversations = ConversationManager.getAll()
+        val driverId = "DRV001"
+        val driverName = "Driver"
 
-        if (conversations.isEmpty()) {
+        val view = layoutInflater.inflate(
+            R.layout.item_conversation,
+            layoutConversations,
+            false
+        )
 
-            val empty = TextView(this)
+        val txtName =
+            view.findViewById<TextView>(R.id.txtName)
 
-            empty.text = "No conversations yet."
+        val txtRole =
+            view.findViewById<TextView>(R.id.txtRole)
 
-            empty.textSize = 18f
+        val txtLastMessage =
+            view.findViewById<TextView>(R.id.txtLastMessage)
 
-            layoutConversations.addView(empty)
+        val txtTime =
+            view.findViewById<TextView>(R.id.txtTime)
 
-            return
-        }
+        txtName.text = driverName
 
-        conversations.forEach { conversation ->
+        txtRole.text = "Driver"
 
-            val view = layoutInflater.inflate(
-                R.layout.item_conversation,
-                layoutConversations,
-                false
+        txtLastMessage.text =
+            MessageManager.getPreviewMessage(
+                "STF001",
+                driverId
             )
 
-            val txtName =
-                view.findViewById<TextView>(R.id.txtName)
+        txtTime.text =
+            MessageManager.getLastTimestamp(
+                "STF001",
+                driverId
+            )
 
-            val txtRole =
-                view.findViewById<TextView>(R.id.txtRole)
+        view.setOnClickListener {
 
-            val txtLastMessage =
-                view.findViewById<TextView>(R.id.txtLastMessage)
+            val intent = Intent(
+                this,
+                ChatActivity::class.java
+            )
 
-            val txtTime =
-                view.findViewById<TextView>(R.id.txtTime)
+            intent.putExtra(
+                "SENDER_ID",
+                "STF001"
+            )
 
-            txtName.text = conversation.receiverName
+            intent.putExtra(
+                "SENDER_NAME",
+                "Maria Staff"
+            )
 
-            txtRole.text = "Driver"
+            intent.putExtra(
+                "RECEIVER_ID",
+                driverId
+            )
 
-            txtLastMessage.text = conversation.lastMessage
+            intent.putExtra(
+                "RECEIVER_NAME",
+                driverName
+            )
 
-            if (conversation.lastMessageTimestamp == 0L) {
-
-                txtTime.text = "--:--"
-
-            } else {
-
-                txtTime.text =
-                    java.text.SimpleDateFormat(
-                        "hh:mm a",
-                        java.util.Locale.getDefault()
-                    ).format(
-                        java.util.Date(
-                            conversation.lastMessageTimestamp
-                        )
-                    )
-            }
-
-            view.setOnClickListener {
-
-                val intent = Intent(
-                    this,
-                    ChatActivity::class.java
-                )
-
-                intent.putExtra("SENDER_ID", "STF001")
-                intent.putExtra("SENDER_NAME", "Maria Staff")
-
-                intent.putExtra(
-                    "RECEIVER_ID",
-                    conversation.receiverId
-                )
-
-                intent.putExtra(
-                    "RECEIVER_NAME",
-                    conversation.receiverName
-                )
-
-                startActivity(intent)
-            }
-
-            layoutConversations.addView(view)
+            startActivity(intent)
         }
+
+        layoutConversations.addView(view)
     }
 }

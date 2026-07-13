@@ -86,14 +86,12 @@ class StudentHomeActivity : AppCompatActivity() {
 
         btnMessages.setOnClickListener {
 
-            val intent = Intent(
-                this,
-                ConversationListActivity::class.java
+            startActivity(
+                Intent(
+                    this,
+                    StudentMessagesActivity::class.java
+                )
             )
-
-            intent.putExtra("IS_DRIVER", false)
-
-            startActivity(intent)
         }
 
         btnNotifications.setOnClickListener {
@@ -154,14 +152,12 @@ class StudentHomeActivity : AppCompatActivity() {
 
                 R.id.nav_messages -> {
 
-                    val intent = Intent(
-                        this,
-                        ConversationListActivity::class.java
+                    startActivity(
+                        Intent(
+                            this,
+                            StudentMessagesActivity::class.java
+                        )
                     )
-
-                    intent.putExtra("IS_DRIVER", false)
-
-                    startActivity(intent)
                 }
 
                 R.id.nav_history -> {

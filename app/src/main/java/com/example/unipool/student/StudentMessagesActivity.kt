@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.ChatActivity
-import com.example.unipool.ConversationManager
+import com.example.unipool.managers.MessageManager
 import com.example.unipool.R
 
 class StudentMessagesActivity : AppCompatActivity() {
@@ -33,96 +33,66 @@ class StudentMessagesActivity : AppCompatActivity() {
 
         layoutConversations.removeAllViews()
 
-        val conversations = ConversationManager.getAll()
+        val driverId = "DRV001"
+        val driverName = "Driver"
 
-        if (conversations.isEmpty()) {
+        val view = layoutInflater.inflate(
+            R.layout.item_conversation,
+            layoutConversations,
+            false
+        )
 
-            val empty = TextView(this)
+        val txtName =
+            view.findViewById<TextView>(R.id.txtName)
 
-            empty.text = "No conversations yet."
+        val txtRole =
+            view.findViewById<TextView>(R.id.txtRole)
 
-            empty.textSize = 18f
+        val txtLastMessage =
+            view.findViewById<TextView>(R.id.txtLastMessage)
 
-            layoutConversations.addView(empty)
+        val txtTime =
+            view.findViewById<TextView>(R.id.txtTime)
 
-            return
-        }
+        txtName.text = driverName
 
-        conversations.forEach { conversation ->
+        txtRole.text = "Driver"
 
-            val view = layoutInflater.inflate(
-                R.layout.item_conversation,
-                layoutConversations,
-                false
+        txtLastMessage.text =
+            "Count: ${MessageManager.getMessageCount()}"
+
+        txtTime.text = "${driverId}"
+
+        view.setOnClickListener {
+
+            val intent = Intent(
+                this,
+                ChatActivity::class.java
             )
 
-            val txtName =
-                view.findViewById<TextView>(R.id.txtName)
+            intent.putExtra(
+                "SENDER_ID",
+                "STU001"
+            )
 
-            val txtRole =
-                view.findViewById<TextView>(R.id.txtRole)
+            intent.putExtra(
+                "SENDER_NAME",
+                "John Student"
+            )
 
-            val txtLastMessage =
-                view.findViewById<TextView>(R.id.txtLastMessage)
+            intent.putExtra(
+                "RECEIVER_ID",
+                driverId
+            )
 
-            val txtTime =
-                view.findViewById<TextView>(R.id.txtTime)
+            intent.putExtra(
+                "RECEIVER_NAME",
+                driverName
+            )
 
-            txtName.text = conversation.receiverName
-
-            txtRole.text = "Driver"
-
-            txtLastMessage.text = conversation.lastMessage
-
-            if (conversation.lastMessageTimestamp == 0L) {
-
-                txtTime.text = "--:--"
-
-            } else {
-
-                txtTime.text =
-                    java.text.SimpleDateFormat(
-                        "hh:mm a",
-                        java.util.Locale.getDefault()
-                    ).format(
-                        java.util.Date(
-                            conversation.lastMessageTimestamp
-                        )
-                    )
-            }
-
-            view.setOnClickListener {
-
-                val intent =
-                    Intent(
-                        this,
-                        ChatActivity::class.java
-                    )
-
-                intent.putExtra(
-                    "SENDER_ID",
-                    "STU001"
-                )
-
-                intent.putExtra(
-                    "SENDER_NAME",
-                    "John Student"
-                )
-
-                intent.putExtra(
-                    "RECEIVER_ID",
-                    conversation.receiverId
-                )
-
-                intent.putExtra(
-                    "RECEIVER_NAME",
-                    conversation.receiverName
-                )
-
-                startActivity(intent)
-            }
-
-            layoutConversations.addView(view)
+            startActivity(intent)
         }
+
+        layoutConversations.addView(view)
     }
 }
