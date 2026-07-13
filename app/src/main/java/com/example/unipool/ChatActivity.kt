@@ -6,10 +6,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.unipool.managers.MessageManager
 import com.example.unipool.models.Message
 import java.text.SimpleDateFormat
-import java.util.*
-import com.example.unipool.managers.MessageManager
+import java.util.Date
+import java.util.Locale
 
 class ChatActivity : AppCompatActivity() {
 
@@ -57,27 +58,11 @@ class ChatActivity : AppCompatActivity() {
                 message = text
             )
 
-            MessageManager.sendMessage(message)
-
-            android.widget.Toast.makeText(
+            MessageManager.sendMessage(
                 this,
-                "Saved: ${message.senderId} -> ${message.receiverId}",
-                android.widget.Toast.LENGTH_LONG
-            ).show()
-
-            ConversationManager.updateConversation(
-
-                receiverId = receiverId,
-
-                receiverName = receiverName,
-
-                receiverRole = null,
-
-                lastMessage = text,
-
-                timestamp = message.timestamp
-
+                message
             )
+
 
             etMessage.text.clear()
 

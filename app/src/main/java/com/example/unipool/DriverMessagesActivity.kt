@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.unipool.managers.TripManager
 import com.example.unipool.managers.MessageManager
 class DriverMessagesActivity : AppCompatActivity() {
 
@@ -30,70 +29,103 @@ class DriverMessagesActivity : AppCompatActivity() {
 
         layoutMessages.removeAllViews()
 
-        val trip = TripManager.currentTrip ?: return
+        val conversations =
+            MessageManager.getConversationPartners(
+                "DRV001"
+            )
 
-        trip.seats.forEach { seat ->
+        if (conversations.isEmpty()) {
 
-            if (
-                seat.passengerId != null &&
-                seat.passengerName != null
-            ) {
+            val empty = TextView(this)
 
-                val view = layoutInflater.inflate(
-                    R.layout.item_conversation,
-                    layoutMessages,
-                    false
-                )
+            empty.text = "No conversations yet."
 
-                val txtName =
-                    view.findViewById<TextView>(R.id.txtName)
+            empty.textSize = 18f
 
-                val txtRole =
-                    view.findViewById<TextView>(R.id.txtRole)
+            layoutMessages.addView(empty)
 
-                val txtLastMessage =
-                    view.findViewById<TextView>(R.id.txtLastMessage)
+            return
+        }
 
-                val txtTime =
-                    view.findViewById<TextView>(R.id.txtTime)
+        conversations.forEach { conversation ->
 
-                txtName.text = seat.passengerName
+            val passengerId = conversation.first
 
-                txtRole.text =
-                    seat.passengerRole?.name
-                        ?.lowercase()
-                        ?.replaceFirstChar { it.uppercase() }
+            val passengerName = conversation.second
 
-                txtLastMessage.text =
-                    MessageManager.getPreviewMessage(
-                        "DRV001",
-                        seat.passengerId!!
-                    )
+            val view = layoutInflater.inflate(
+                R.layout.item_conversation,
+                layoutMessages,
+                false
+            )
 
-                txtTime.text =
-                    MessageManager.getLastTimestamp(
-                        "DRV001",
-                        seat.passengerId!!
-                    )
+            val txtName =
+                view.findViewById<TextView>(R.id.txtName)
 
-                view.setOnClickListener {
+            val txtRole =
+                view.findViewById<TextView>(R.id.txtRole)
 
-                    val intent = Intent(
-                        this,
-                        ChatActivity::class.java
-                    )
+            val txtLastMessage =
+                view.findViewById<TextView>(R.id.txtLastMessage)
 
-                    intent.putExtra("SENDER_ID", "DRV001")
-                    intent.putExtra("SENDER_NAME", "Driver")
+            val txtTime =
+                view.findViewById<TextView>(R.id.txtTime)
 
-                    intent.putExtra("RECEIVER_ID", seat.passengerId)
-                    intent.putExtra("RECEIVER_NAME", seat.passengerName)
+            txtName.text = passengerName
 
-                    startActivity(intent)
+            txtRole.text =
+                when (passengerId) {
+
+                    "STU001" -> "Student"
+
+                    "STA001" -> "Staff"
+
+                    else -> "Passenger"
                 }
 
-                layoutMessages.addView(view)
+            txtLastMessage.text =
+                MessageManager.getPreviewMessage(
+                    "DRV001",
+                    passengerId
+                )
+
+            txtTime.text =
+                MessageManager.getLastTimestamp(
+                    "DRV001",
+                    passengerId
+                )
+
+            view.setOnClickListener {
+
+                val intent = Intent(
+                    this,
+                    ChatActivity::class.java
+                )
+
+                intent.putExtra(
+                    "SENDER_ID",
+                    "DRV001"
+                )
+
+                intent.putExtra(
+                    "SENDER_NAME",
+                    "Driver"
+                )
+
+                intent.putExtra(
+                    "RECEIVER_ID",
+                    passengerId
+                )
+
+                intent.putExtra(
+                    "RECEIVER_NAME",
+                    passengerName
+                )
+
+                startActivity(intent)
             }
+
+            layoutMessages.addView(view)
         }
     }
 }

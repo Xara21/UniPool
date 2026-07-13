@@ -64,7 +64,6 @@
         <activity android:name=".PassengerAvailableTripsActivity"/>
         <activity android:name=".PassengerSeatReservationActivity"/>
         <activity android:name=".ChatActivity"/>
-        <activity android:name=".ConversationListActivity"/>
         <activity android:name=".StaffMessagesActivity"/>
 
 

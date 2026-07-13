@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.student.StudentHomeActivity
 import com.example.unipool.models.CurrentPassenger
 import com.example.unipool.models.PassengerRole
+import com.example.unipool.managers.MessageManager
 
 class LoginActivity : AppCompatActivity() {
 
@@ -31,6 +32,8 @@ class LoginActivity : AppCompatActivity() {
         tvSignUpLink.setOnClickListener {
             startActivity(Intent(this, SignUpAsActivity::class.java))
         }
+
+        MessageManager.loadFromStorage(this)
     }
 
     private fun attemptLogin() {

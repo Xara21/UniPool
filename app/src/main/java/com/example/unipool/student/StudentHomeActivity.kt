@@ -14,7 +14,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.example.unipool.PassengerAvailableTripsActivity
 import com.example.unipool.student.StudentNotificationsActivity
-import com.example.unipool.ConversationListActivity
 
 class StudentHomeActivity : AppCompatActivity() {
 
