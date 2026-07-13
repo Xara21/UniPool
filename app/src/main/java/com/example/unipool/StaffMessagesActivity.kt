@@ -55,17 +55,15 @@ class StaffMessagesActivity : AppCompatActivity() {
 
         txtRole.text = "Driver"
 
-        txtLastMessage.text =
-            MessageManager.getPreviewMessage(
-                "STF001",
-                driverId
-            )
+        MessageManager.getPreviewMessage(
+            "STA001",
+            driverId
+        )
 
-        txtTime.text =
-            MessageManager.getLastTimestamp(
-                "STF001",
-                driverId
-            )
+        MessageManager.getLastTimestamp(
+            "STA001",
+            driverId
+        )
 
         view.setOnClickListener {
 
@@ -76,7 +74,7 @@ class StaffMessagesActivity : AppCompatActivity() {
 
             intent.putExtra(
                 "SENDER_ID",
-                "STF001"
+                "STA001"
             )
 
             intent.putExtra(

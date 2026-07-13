@@ -132,74 +132,38 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
                             if (isStaff) "STA001"
                             else "STU001"
 
+                        // Students can only reserve one seat
+                        android.util.Log.d(
+                            "RESERVATION_CHECK",
+                            "Checking $passengerId"
+                        )
+
+                        android.util.Log.d(
+                            "RESERVATION_CHECK",
+                            "Already reserved = ${TripManager.hasExistingReservation(passengerId)}"
+                        )
+
                         if (TripManager.hasExistingReservation(passengerId)) {
 
-                            if (!isStaff) {
+                            Toast.makeText(
+                                this,
+                                "You already reserved a seat.",
+                                Toast.LENGTH_LONG
+                            ).show()
 
-                                seat.status = SeatStatus.RESERVED
-                                seat.passengerName = "John Student"
-                                seat.passengerId = "STU001"
-                                seat.passengerRole = PassengerRole.STUDENT
-
-                            } else {
-
-                                when (seat.status) {
-
-                                    SeatStatus.AVAILABLE -> {
-
-                                        seat.status = SeatStatus.RESERVED
-                                        seat.passengerName = "Jane Staff"
-                                        seat.passengerId = "STA001"
-                                        seat.passengerRole = PassengerRole.STAFF
-                                    }
-
-                                    SeatStatus.RESERVED -> {
-
-                                        if (seat.passengerRole == PassengerRole.STUDENT) {
-
-                                            seat.passengerName = "Jane Staff"
-                                            seat.passengerId = "STA001"
-                                            seat.passengerRole = PassengerRole.STAFF
-
-                                            Toast.makeText(
-                                                this,
-                                                "Student reservation replaced.",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-
-                                        } else {
-
-                                            Toast.makeText(
-                                                this,
-                                                "Another staff already reserved this seat.",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-
-                                            return@setPositiveButton
-                                        }
-                                    }
-
-                                    SeatStatus.OCCUPIED -> {
-
-                                        Toast.makeText(
-                                            this,
-                                            "Passenger is already onboard.",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-
-                                        return@setPositiveButton
-                                    }
-                                }
-                            }
+                            return@setPositiveButton
                         }
 
                         if (!isStaff) {
 
-                            // Normal student reservation
+                            // Student reservation
 
                             seat.status = SeatStatus.RESERVED
+
                             seat.passengerName = "John Student"
+
                             seat.passengerId = "STU001"
+
                             seat.passengerRole = PassengerRole.STUDENT
 
                         } else {
@@ -209,8 +173,11 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
                             if (seat.status == SeatStatus.AVAILABLE) {
 
                                 seat.status = SeatStatus.RESERVED
+
                                 seat.passengerName = "Jane Staff"
+
                                 seat.passengerId = "STA001"
+
                                 seat.passengerRole = PassengerRole.STAFF
 
                             } else {
@@ -224,17 +191,28 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
 
                                 if (studentSeat != null) {
 
+                                    // Remove student reservation
+
                                     studentSeat.status = SeatStatus.AVAILABLE
+
                                     studentSeat.passengerId = null
+
                                     studentSeat.passengerName = null
+
                                     studentSeat.passengerRole = null
 
                                     NotificationManager.add(
                                         "Your reservation for Trip #${trip.tripId} was replaced because a staff member has priority."
                                     )
 
+                                    // Reserve seat for staff
+
+                                    seat.status = SeatStatus.RESERVED
+
                                     seat.passengerName = "Jane Staff"
+
                                     seat.passengerId = "STA001"
+
                                     seat.passengerRole = PassengerRole.STAFF
 
                                     Toast.makeText(
@@ -254,6 +232,14 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
                                     return@setPositiveButton
                                 }
                             }
+                        }
+
+                        trip.seats.forEach {
+
+                            android.util.Log.d(
+                                "STAFF_DEBUG",
+                                "Seat=${it.id}, passengerId=${it.passengerId}, role=${it.passengerRole}, status=${it.status}"
+                            )
                         }
 
                         TripManager.saveToStorage(this)
