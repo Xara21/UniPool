@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.managers.TripManager
+import com.example.unipool.managers.MessageManager
 
 class DriverConversationsActivity : AppCompatActivity() {
 
@@ -17,6 +18,12 @@ class DriverConversationsActivity : AppCompatActivity() {
 
         layoutConversations = findViewById(R.id.layoutConversations)
 
+        loadPassengers()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadPassengers()
     }
 
@@ -77,33 +84,14 @@ class DriverConversationsActivity : AppCompatActivity() {
                         }
                         ?: "Passenger"
 
-                val conversation =
-                    ConversationManager.getConversation(
+                txtLastMessage.text =
+                    "Messages: ${MessageManager.getMessageCount()}"
+
+                txtTime.text =
+                    MessageManager.getLastTimestamp(
+                        "DRV001",
                         seat.passengerId!!
                     )
-
-                if (conversation != null) {
-
-                    txtLastMessage.text =
-                        conversation.lastMessage
-
-                    txtTime.text =
-                        java.text.SimpleDateFormat(
-                            "hh:mm a",
-                            java.util.Locale.getDefault()
-                        ).format(
-                            java.util.Date(
-                                conversation.lastMessageTimestamp
-                            )
-                        )
-
-                } else {
-
-                    txtLastMessage.text = "Tap to chat"
-
-                    txtTime.text = "--:--"
-
-                }
 
                 view.setOnClickListener {
 

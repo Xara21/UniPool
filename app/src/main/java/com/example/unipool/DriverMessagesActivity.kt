@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.managers.TripManager
-
+import com.example.unipool.managers.MessageManager
 class DriverMessagesActivity : AppCompatActivity() {
 
     private lateinit var layoutMessages: LinearLayout
@@ -16,6 +16,12 @@ class DriverMessagesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_driver_messages)
 
         layoutMessages = findViewById(R.id.layoutMessages)
+
+        loadPassengers()
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         loadPassengers()
     }
@@ -58,9 +64,17 @@ class DriverMessagesActivity : AppCompatActivity() {
                         ?.lowercase()
                         ?.replaceFirstChar { it.uppercase() }
 
-                txtLastMessage.text = "Tap to chat"
+                txtLastMessage.text =
+                    MessageManager.getPreviewMessage(
+                        "DRV001",
+                        seat.passengerId!!
+                    )
 
-                txtTime.text = "--:--"
+                txtTime.text =
+                    MessageManager.getLastTimestamp(
+                        "DRV001",
+                        seat.passengerId!!
+                    )
 
                 view.setOnClickListener {
 

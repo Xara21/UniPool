@@ -1,15 +1,16 @@
 package com.example.unipool.managers
 
 import com.example.unipool.models.Message
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object MessageManager {
 
     private val messages = mutableListOf<Message>()
 
     fun sendMessage(message: Message) {
-
         messages.add(message)
-
     }
 
     fun getConversation(
@@ -42,25 +43,46 @@ object MessageManager {
 
     }
 
-    fun getConversationPartners(
-        currentUserId: String
-    ): List<String> {
+    fun getPreviewMessage(
+        user1: String,
+        user2: String
+    ): String {
 
-        return messages.flatMap {
+        val last = getLastMessage(user1, user2)
 
-            listOf(it.senderId, it.receiverId)
+        return if (last == null) {
 
-        }.filter {
+            "Tap to chat"
 
-            it != currentUserId
+        } else {
 
-        }.distinct()
-    }
+            "${last.senderName}: ${last.message}"
 
-    fun clearAll() {
-
-        messages.clear()
+        }
 
     }
 
+    fun getLastTimestamp(
+        user1: String,
+        user2: String
+    ): String {
+
+        val last = getLastMessage(user1, user2)
+
+        if (last == null)
+            return "--:--"
+
+        val formatter = SimpleDateFormat(
+            "h:mm a",
+            Locale.getDefault()
+        )
+
+        return formatter.format(
+            Date(last.timestamp)
+        )
+    }
+
+    fun getMessageCount(): Int {
+        return messages.size
+    }
 }

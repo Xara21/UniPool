@@ -59,6 +59,12 @@ class ChatActivity : AppCompatActivity() {
 
             MessageManager.sendMessage(message)
 
+            android.widget.Toast.makeText(
+                this,
+                "Saved: ${message.senderId} -> ${message.receiverId}",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+
             ConversationManager.updateConversation(
 
                 receiverId = receiverId,
