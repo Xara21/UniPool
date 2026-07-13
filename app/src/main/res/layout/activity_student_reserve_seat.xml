@@ -7,198 +7,241 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#F5F5F5">
+        android:layout_height="match_parent">
 
-        <!-- Toolbar -->
+        <!-- UniPool Background -->
 
-        <RelativeLayout
-            android:id="@+id/topToolbar"
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@android:color/black"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:layout_height="match_parent"
+            android:src="@drawable/bg_unipool"
+            android:scaleType="centerCrop"
+            android:contentDescription="Background"/>
 
-            <ImageView
-                android:id="@+id/btnHamburger"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:src="@android:drawable/ic_menu_sort_by_size"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="Menu"/>
+        <!-- Floating Menu -->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="Reserve Seat"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="18sp"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnHamburger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_menu_24"
+            android:contentDescription="Menu"
+            app:backgroundTint="@android:color/white"
+            app:tint="@android:color/black"/>
 
-        </RelativeLayout>
-
+        <!-- Scrollable Content -->
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fillViewport="true">
+            android:layout_height="match_parent"
+            android:layout_below="@id/btnHamburger"
+            android:layout_marginTop="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
-
-                <!-- ===========================
-                     STATUS CARD
-                ============================ -->
+                android:orientation="vertical"
+                android:padding="24dp">
+                <!-- Main Card -->
 
                 <LinearLayout
-                    android:id="@+id/panelInformationCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/bg_card_rounded"
+                    android:elevation="10dp"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFEB3B"
-                    android:layout_marginBottom="16dp">
+                    android:padding="24dp">
+
+                    <!-- Logo -->
+
+                    <ImageView
+                        android:layout_width="180dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/unipool_logo"/>
+
+                    <!-- Title -->
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Shuttle Driver:"
-                        android:textSize="12sp"/>
+                        android:layout_gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:text="Reserve Seat"
+                        android:textColor="@android:color/black"
+                        android:textSize="28sp"
+                        android:textStyle="bold"/>
 
-                    <TextView
-                        android:id="@+id/txtDriverName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Jane Doe"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Departure Time:"
-                        android:textSize="12sp"/>
-
-                    <TextView
-                        android:id="@+id/txtDepartureTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="--"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Destination:"
-                        android:textSize="12sp"/>
-
-                    <TextView
-                        android:id="@+id/txtRouteName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="--"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="12dp"/>
+                    <!-- Yellow Accent -->
 
                     <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#33000000"/>
+                        android:layout_width="60dp"
+                        android:layout_height="4dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="#F4C430"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Trip Status:"
-                        android:textSize="12sp"/>
+                    <!-- Trip Information Card -->
 
-                    <TextView
-                        android:id="@+id/txtCurrentStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pending"
-                        android:textStyle="bold"
-                        android:textSize="20sp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginBottom="12dp"
-                        android:background="#33000000"/>
-
-                    <!-- Seat Counters -->
-
-                    <TextView
-                        android:id="@+id/txtOccupied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🟢 Occupied: 0"
-                        android:textStyle="bold"
-                        android:textSize="16sp"/>
-
-                    <TextView
-                        android:id="@+id/txtReserved"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🟡 Reserved: 0"
-                        android:textStyle="bold"
-                        android:textSize="16sp"/>
-
-                    <TextView
-                        android:id="@+id/txtAvailable"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🔴 Available: 0"
-                        android:textStyle="bold"
-                        android:textSize="16sp"/>
-
-                    <GridLayout
-                        android:id="@+id/gridSeats"
+                    <LinearLayout
+                        android:id="@+id/panelInformationCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:columnCount="5"
-                        android:useDefaultMargins="true"/>
+                        android:layout_marginBottom="20dp"
+                        android:background="#FFEB3B"
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
+                        <!-- Driver -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Driver"
+                            android:textColor="#555555"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtDriverName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:text="Jane Doe"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+
+                        <!-- Departure -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Departure Time"
+                            android:textColor="#555555"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtDepartureTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:text="--"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"/>
+
+                        <!-- Destination -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Destination"
+                            android:textColor="#555555"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtRouteName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:text="--"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="#33000000"/>
+
+                        <!-- Trip Status -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Trip Status"
+                            android:textColor="#555555"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtCurrentStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            android:text="Scheduled"
+                            android:textColor="@android:color/black"
+                            android:textSize="22sp"
+                            android:textStyle="bold"/>
+
+                        <!-- Seat Counters -->
+
+                        <TextView
+                            android:id="@+id/txtOccupied"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp"
+                            android:text="🟢 Occupied: 0"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtReserved"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp"
+                            android:text="🟡 Reserved: 0"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtAvailable"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            android:text="🔴 Available: 0"
+                            android:textStyle="bold"/>
+
+                        <!-- Seat Grid -->
+
+                        <GridLayout
+                            android:id="@+id/gridSeats"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:columnCount="5"
+                            android:useDefaultMargins="true"/>
+
+                    </LinearLayout>
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnSelectTrip"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/bg_button_black"
+                        android:text="Reserve Selected Seat"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"/>
                 </LinearLayout>
-
-
-                <Button
-                    android:id="@+id/btnSelectTrip"
-                    android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:text="Reserve Selected Seat"
-                    android:backgroundTint="#607D8B"
-                    android:textColor="@android:color/white"/>
 
             </LinearLayout>
 
         </ScrollView>
 
-    </LinearLayout>
-
+    </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@android:color/white"
+        app:itemIconTint="@null"
+        app:headerLayout="@layout/nav_header_student"
         app:menu="@menu/student_drawer_menu"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

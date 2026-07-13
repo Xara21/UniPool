@@ -7,6 +7,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.managers.TripManager
+import android.view.LayoutInflater
+import androidx.appcompat.widget.AppCompatButton
 
 class PassengerAvailableTripsActivity : AppCompatActivity() {
 
@@ -35,37 +37,38 @@ class PassengerAvailableTripsActivity : AppCompatActivity() {
                 trip.status != "In Progress"
             ) continue
 
-            val card = LinearLayout(this)
+            val card = LayoutInflater.from(this)
+                .inflate(
+                    R.layout.item_trip_card,
+                    layoutTrips,
+                    false
+                )
 
-            card.orientation = LinearLayout.VERTICAL
+            val title = card.findViewById<TextView>(R.id.txtTripTitle)
 
-            card.setPadding(40,40,40,40)
+            val destination =
+                card.findViewById<TextView>(R.id.txtDestination)
 
-            val title = TextView(this)
+            val departure =
+                card.findViewById<TextView>(R.id.txtDeparture)
+
+            val seats =
+                card.findViewById<TextView>(R.id.txtSeats)
+
+            val button =
+                card.findViewById<AppCompatButton>(R.id.btnReserve)
 
             title.text =
                 "Trip #${trip.tripId}"
 
-            title.textSize = 20f
-
-            val destination = TextView(this)
-
             destination.text =
-                "Destination: ${trip.destination}"
-
-            val departure = TextView(this)
+                trip.destination
 
             departure.text =
-                "Departure: ${trip.departureTime}"
-
-            val seats = TextView(this)
+                trip.departureTime
 
             seats.text =
-                "Available Seats: ${trip.availableCount()}"
-
-            val button = Button(this)
-
-            button.text = "Reserve"
+                trip.availableCount().toString()
 
             button.setOnClickListener {
 
@@ -81,11 +84,6 @@ class PassengerAvailableTripsActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
-            card.addView(title)
-            card.addView(destination)
-            card.addView(departure)
-            card.addView(seats)
-            card.addView(button)
 
             layoutTrips.addView(card)
         }

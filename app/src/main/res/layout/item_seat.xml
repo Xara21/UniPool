@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.appcompat.widget.AppCompatButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/btnSeat"
+
+    android:layout_width="72dp"
+    android:layout_height="72dp"
+
+    android:layout_margin="6dp"
+
+    android:background="@drawable/bg_button_black"
+
+    android:gravity="center"
+
+    android:text="A1"
+
+    android:textAllCaps="false"
+
+    android:textColor="@android:color/white"
+
+    android:textSize="14sp"
+
+    android:textStyle="bold"/>

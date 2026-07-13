@@ -10,6 +10,8 @@ import com.example.unipool.R
 import com.example.unipool.managers.TripManager
 import com.example.unipool.models.TripLog
 import com.example.unipool.models.SeatStatus
+import android.view.LayoutInflater
+import androidx.appcompat.widget.AppCompatButton
 
 class StudentReserveSeatActivity : AppCompatActivity() {
 
@@ -222,13 +224,14 @@ class StudentReserveSeatActivity : AppCompatActivity() {
 
         for (seat in trip.seats) {
 
-            val button = Button(this)
+            val button = LayoutInflater.from(this)
+                .inflate(
+                    R.layout.item_seat,
+                    gridSeats,
+                    false
+                ) as AppCompatButton
 
             button.text = seat.id
-
-            button.textSize = 12f
-
-            button.setPadding(4,4,4,4)
 
             val params = GridLayout.LayoutParams()
 
