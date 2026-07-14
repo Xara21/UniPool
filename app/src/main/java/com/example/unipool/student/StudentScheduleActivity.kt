@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.unipool.R
 import com.example.unipool.managers.TripManager
 import com.example.unipool.models.SeatStatus
+import com.example.unipool.NotificationManager
 
 class StudentScheduleActivity : AppCompatActivity() {
 
@@ -92,6 +93,10 @@ class StudentScheduleActivity : AppCompatActivity() {
                 .setPositiveButton("Yes") { _, _ ->
 
                     TripManager.removeReservation(studentId)
+
+                    NotificationManager.add(
+                        "Your reservation has been cancelled."
+                    )
 
                     TripManager.saveToStorage(this)
 

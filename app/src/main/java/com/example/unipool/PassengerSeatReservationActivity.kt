@@ -224,6 +224,10 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
                             }
                         }
 
+                        NotificationManager.add(
+                            "You successfully reserved seat ${seat.id} for Trip #${trip.tripId}."
+                        )
+
                         TripManager.saveToStorage(this)
 
                         Toast.makeText(

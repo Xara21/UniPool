@@ -243,6 +243,10 @@ $passengerList
 
                     populateTripLogsTable()
 
+                    NotificationManager.add(
+                        "Trip #${trip.tripId} has been completed."
+                    )
+
                     Toast.makeText(
                         this,
                         "Trip Completed",
