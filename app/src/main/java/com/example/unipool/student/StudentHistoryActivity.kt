@@ -65,7 +65,9 @@ class StudentHistoryActivity : AppCompatActivity() {
                 historyText.append("\n\n")
             }
 
+
             txtSubtitle.text = historyText.toString()
+
         }
     }
 }

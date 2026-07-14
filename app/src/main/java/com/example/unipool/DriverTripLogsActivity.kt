@@ -220,10 +220,12 @@ $passengerList
                         Locale.getDefault()
                     ).format(Date())
 
+
                 val index =
                     TripManager.tripLogsList.indexOfFirst {
                         it.tripId == trip.tripId
                     }
+
 
                 if (index != -1) {
 

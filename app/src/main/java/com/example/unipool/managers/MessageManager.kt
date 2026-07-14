@@ -167,7 +167,7 @@ object MessageManager {
                 KEY_MESSAGES,
                 jsonArray.toString()
             )
-            .apply()
+            .commit()
     }
 
     fun loadFromStorage(

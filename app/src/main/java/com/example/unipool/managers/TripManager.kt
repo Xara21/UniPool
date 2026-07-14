@@ -149,20 +149,20 @@ object TripManager {
 
                 }
 
-                tripLogsList.add(
-                    TripLog(
-                        obj.getString("tripId"),
-                        obj.getString("driverName"),
-                        obj.getString("shuttleId"),
-                        obj.getString("departureTime"),
-                        obj.getString("arrivalTime"),
-                        obj.getString("destination"),
-                        obj.getString("status"),
-                        obj.getInt("passengerCount"),
-                        obj.getString("tripType"),
-                        seats
-                    )
+                val loadedTrip = TripLog(
+                    obj.getString("tripId"),
+                    obj.getString("driverName"),
+                    obj.getString("shuttleId"),
+                    obj.getString("departureTime"),
+                    obj.getString("arrivalTime"),
+                    obj.getString("destination"),
+                    obj.getString("status"),
+                    obj.getInt("passengerCount"),
+                    obj.getString("tripType"),
+                    seats
                 )
+
+                tripLogsList.add(loadedTrip)
             }
 
             currentTrip = tripLogsList.firstOrNull {
@@ -233,8 +233,11 @@ object TripManager {
         }
 
         prefs.edit()
-            .putString(KEY_TRIPS, jsonArray.toString())
-            .apply()
+            .putString(
+                KEY_TRIPS,
+                jsonArray.toString()
+            )
+            .commit()
     }
 
     fun addTrip(context: Context, trip: TripLog) {

@@ -331,7 +331,7 @@ class DriverDeparturesActivity : AppCompatActivity() {
             val fullDepartureTimestamp = "$currentDateStr $selectedTime"
 
             val dynamicTrip = TripLog(
-                tripId = (TripManager.tripLogsList.size + 1).toString(),
+                tripId = "TRIP-${System.currentTimeMillis()}",
                 driverName = TripManager.currentDriverName,
                 shuttleId = shuttle,
                 departureTime = fullDepartureTimestamp,

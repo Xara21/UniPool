@@ -39,10 +39,6 @@ class StaffHistoryActivity : AppCompatActivity() {
                     }
         }
 
-        android.util.Log.d(
-            "STAFF_HISTORY",
-            "Found ${completedTrips.size} completed trips"
-        )
 
         if (completedTrips.isEmpty()) {
 
