@@ -132,16 +132,6 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
                             if (isStaff) "STA001"
                             else "STU001"
 
-                        // Students can only reserve one seat
-                        android.util.Log.d(
-                            "RESERVATION_CHECK",
-                            "Checking $passengerId"
-                        )
-
-                        android.util.Log.d(
-                            "RESERVATION_CHECK",
-                            "Already reserved = ${TripManager.hasExistingReservation(passengerId)}"
-                        )
 
                         if (TripManager.hasExistingReservation(passengerId)) {
 
@@ -174,7 +164,7 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
 
                                 seat.status = SeatStatus.RESERVED
 
-                                seat.passengerName = "Jane Staff"
+                                seat.passengerName = "Maria Staff"
 
                                 seat.passengerId = "STA001"
 
@@ -209,7 +199,7 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
 
                                     seat.status = SeatStatus.RESERVED
 
-                                    seat.passengerName = "Jane Staff"
+                                    seat.passengerName = "Maria Staff"
 
                                     seat.passengerId = "STA001"
 
@@ -232,14 +222,6 @@ class PassengerSeatReservationActivity : AppCompatActivity() {
                                     return@setPositiveButton
                                 }
                             }
-                        }
-
-                        trip.seats.forEach {
-
-                            android.util.Log.d(
-                                "STAFF_DEBUG",
-                                "Seat=${it.id}, passengerId=${it.passengerId}, role=${it.passengerRole}, status=${it.status}"
-                            )
                         }
 
                         TripManager.saveToStorage(this)

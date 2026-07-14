@@ -58,6 +58,18 @@ class StaffHomeActivity : AppCompatActivity() {
             startActivity(Intent(this, StaffAvailableTripsActivity::class.java))
         }
 
+        btnViewSchedule.setOnClickListener {
+
+            startActivity(
+
+                Intent(
+                    this,
+                    StaffScheduleActivity::class.java
+                )
+
+            )
+        }
+
         btnMessages.setOnClickListener {
 
             startActivity(
@@ -70,7 +82,21 @@ class StaffHomeActivity : AppCompatActivity() {
             )
         }
 
+        btnHistory.setOnClickListener {
+
+            startActivity(
+
+                Intent(
+                    this,
+                    StaffHistoryActivity::class.java
+                )
+
+            )
+        }
+
     }
+
+
 
     private fun setupDrawer() {
 

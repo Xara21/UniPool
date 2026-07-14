@@ -23,10 +23,6 @@ object MessageManager {
 
         messages.add(message)
 
-        android.util.Log.d(
-            "MESSAGE_STORAGE",
-            "Saved ${messages.size} messages"
-        )
 
         saveToStorage(context)
     }
@@ -178,10 +174,6 @@ object MessageManager {
         context: Context
     ) {
 
-        android.util.Log.d(
-            "MESSAGE_STORAGE",
-            "loadFromStorage() called"
-        )
 
         val prefs = context.getSharedPreferences(
             PREFS_NAME,
@@ -247,10 +239,6 @@ object MessageManager {
 
         }
 
-        android.util.Log.d(
-            "MESSAGE_STORAGE",
-            "Loaded ${messages.size} messages"
-        )
     }
 
     fun getConversationPartners(

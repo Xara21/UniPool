@@ -1,19 +1,23 @@
-package com.example.unipool.student
+package com.example.unipool
 
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.unipool.R
 import com.example.unipool.managers.TripManager
 
-class StudentHistoryActivity : AppCompatActivity() {
+class StaffHistoryActivity : AppCompatActivity() {
 
-    private val currentStudentId = "STU001"
+    private val currentStaffId = "STA001"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_student_placeholder)
+
+        android.util.Log.d(
+            "STAFF_HISTORY",
+            "StaffHistory opened"
+        )
 
         TripManager.loadFromStorage(this)
 
@@ -23,7 +27,7 @@ class StudentHistoryActivity : AppCompatActivity() {
         val txtSubtitle =
             findViewById<TextView>(R.id.txtSubtitle)
 
-        txtTitle.text = "Trip History"
+        txtTitle.text = "Staff History"
 
         val completedTrips = TripManager.tripLogsList.filter { trip ->
 
@@ -31,9 +35,14 @@ class StudentHistoryActivity : AppCompatActivity() {
 
                     trip.seats.any { seat ->
 
-                        seat.passengerId == currentStudentId
+                        seat.passengerId == currentStaffId
                     }
         }
+
+        android.util.Log.d(
+            "STAFF_HISTORY",
+            "Found ${completedTrips.size} completed trips"
+        )
 
         if (completedTrips.isEmpty()) {
 
@@ -42,11 +51,11 @@ class StudentHistoryActivity : AppCompatActivity() {
 
         } else {
 
-            val historyText = StringBuilder()
+            val history = StringBuilder()
 
             completedTrips.forEach { trip ->
 
-                historyText.append(
+                history.append(
 
                     """
                     🚍 Trip #${trip.tripId}
@@ -62,10 +71,10 @@ class StudentHistoryActivity : AppCompatActivity() {
 
                 )
 
-                historyText.append("\n\n")
+                history.append("\n\n")
             }
 
-            txtSubtitle.text = historyText.toString()
+            txtSubtitle.text = history.toString()
         }
     }
 }

@@ -1,14 +1,13 @@
-package com.example.unipool.student
+package com.example.unipool
 
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.unipool.R
 import com.example.unipool.managers.TripManager
 
-class StudentHistoryActivity : AppCompatActivity() {
+class DriverHistoryActivity : AppCompatActivity() {
 
-    private val currentStudentId = "STU001"
+    private val currentDriverName = "Jane Doe"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,37 +22,34 @@ class StudentHistoryActivity : AppCompatActivity() {
         val txtSubtitle =
             findViewById<TextView>(R.id.txtSubtitle)
 
-        txtTitle.text = "Trip History"
+        txtTitle.text = "Driver History"
 
-        val completedTrips = TripManager.tripLogsList.filter { trip ->
+        val completedTrips = TripManager.tripLogsList.filter {
 
-            trip.status == "Completed" &&
-
-                    trip.seats.any { seat ->
-
-                        seat.passengerId == currentStudentId
-                    }
+            it.status == "Completed" &&
+                    it.driverName == currentDriverName
         }
 
         if (completedTrips.isEmpty()) {
 
             txtSubtitle.text =
-                "You have no completed trips yet."
+                "No completed trips yet."
 
         } else {
 
-            val historyText = StringBuilder()
+            val history = StringBuilder()
 
             completedTrips.forEach { trip ->
 
-                historyText.append(
+                history.append(
 
                     """
                     🚍 Trip #${trip.tripId}
-                    Driver: ${trip.driverName}
+                    Shuttle ID: ${trip.shuttleId}
                     Destination: ${trip.destination}
                     Departure: ${trip.departureTime}
                     Arrival: ${trip.arrivalTime}
+                    Passengers: ${trip.passengerCount}
                     Status: ${trip.status}
                     
                     -------------------------
@@ -62,10 +58,10 @@ class StudentHistoryActivity : AppCompatActivity() {
 
                 )
 
-                historyText.append("\n\n")
+                history.append("\n\n")
             }
 
-            txtSubtitle.text = historyText.toString()
+            txtSubtitle.text = history.toString()
         }
     }
 }
