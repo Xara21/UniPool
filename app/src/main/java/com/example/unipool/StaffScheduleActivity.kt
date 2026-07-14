@@ -2,48 +2,131 @@ package com.example.unipool
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.unipool.managers.TripManager
+import com.example.unipool.models.SeatStatus
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class StaffScheduleActivity : AppCompatActivity() {
 
+    private lateinit var txtTitle: TextView
+    private lateinit var txtSubtitle: TextView
+    private lateinit var btnCancelReservation: Button
+
     private lateinit var drawerLayout: DrawerLayout
-
     private lateinit var navigationView: NavigationView
-
     private lateinit var btnMenu: FloatingActionButton
+
+    private val staffId = "STA001"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(
-            R.layout.activity_student_placeholder
-        )
+        setContentView(R.layout.activity_student_placeholder)
 
-        drawerLayout =
-            findViewById(R.id.drawerLayout)
+        drawerLayout = findViewById(R.id.drawerLayout)
+        navigationView = findViewById(R.id.navigationView)
+        btnMenu = findViewById(R.id.btnMenu)
 
-        navigationView =
-            findViewById(R.id.navigationView)
+        txtTitle = findViewById(R.id.txtTitle)
+        txtSubtitle = findViewById(R.id.txtSubtitle)
 
-        btnMenu =
-            findViewById(R.id.btnMenu)
+        btnCancelReservation =
+            findViewById(R.id.btnCancelReservation)
 
         setupDrawer()
 
-        findViewById<TextView>(
-            R.id.txtTitle
-        ).text = "Staff Schedule"
+        loadReservation()
+    }
 
-        findViewById<TextView>(
-            R.id.txtSubtitle
-        ).text =
-            "Staff trip schedules will appear here."
+    override fun onResume() {
+        super.onResume()
+
+        loadReservation()
+    }
+
+    private fun loadReservation() {
+
+        TripManager.loadFromStorage(this)
+
+        val trip = TripManager.tripLogsList.firstOrNull { trip ->
+
+            trip.seats.any { seat ->
+
+                seat.passengerId == staffId &&
+                        seat.status == SeatStatus.RESERVED
+            }
+        }
+
+        if (trip == null) {
+
+            txtTitle.text = "Staff Schedule"
+
+            txtSubtitle.text =
+                "No reservation found."
+
+            btnCancelReservation.visibility = View.GONE
+
+            return
+        }
+
+        val seat = trip.seats.first {
+
+            it.passengerId == staffId &&
+                    it.status == SeatStatus.RESERVED
+        }
+
+        txtTitle.text = "Trip #${trip.tripId}"
+
+        txtSubtitle.text =
+            "Destination: ${trip.destination}\n" +
+                    "Departure: ${trip.departureTime}\n" +
+                    "Seat: ${seat.id}"
+
+        btnCancelReservation.visibility = View.VISIBLE
+
+        btnCancelReservation.setOnClickListener {
+
+            AlertDialog.Builder(this)
+
+                .setTitle("Cancel reservation")
+
+                .setMessage(
+                    "Are you sure you want to cancel your reservation?"
+                )
+
+                .setNegativeButton("No", null)
+
+                .setPositiveButton("Yes") { _, _ ->
+
+                    TripManager.removeReservation(staffId)
+
+                    NotificationManager.add(
+                        "Your reservation has been cancelled."
+                    )
+
+                    TripManager.saveToStorage(this)
+
+                    Toast.makeText(
+                        this,
+                        "Reservation cancelled.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    loadReservation()
+                }
+
+                .show()
+        }
     }
 
     private fun setupDrawer() {

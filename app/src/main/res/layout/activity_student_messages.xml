@@ -7,9 +7,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- UniPool Background -->
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bg_unipool"
+        android:scaleType="centerCrop"
+        android:contentDescription="Background"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <!-- Floating Menu -->
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnMenu"
@@ -35,19 +46,76 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Messages"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:paddingBottom="16dp"/>
+                <!-- Main Card -->
 
                 <LinearLayout
-                    android:id="@+id/layoutConversations"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"/>
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/bg_card_rounded"
+                    android:elevation="10dp"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Logo -->
+
+                    <ImageView
+                        android:layout_width="180dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/unipool_logo"/>
+
+                    <!-- Screen Title -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:text="MESSAGES"
+                        android:textStyle="bold"
+                        android:textSize="28sp"
+                        android:textColor="@android:color/black"/>
+
+                    <!-- Yellow Accent -->
+
+                    <View
+                        android:layout_width="60dp"
+                        android:layout_height="4dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="#F4C430"/>
+
+                    <!-- Subtitle -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your Conversations"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="Select a driver to continue chatting."
+                        android:textColor="#777777"
+                        android:textSize="14sp"/>
+
+                    <!-- DO NOT CHANGE THIS ID -->
+
+                    <LinearLayout
+                        android:id="@+id/layoutConversations"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 

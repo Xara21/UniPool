@@ -23,7 +23,7 @@
         <!-- Floating Menu -->
 
         <ImageView
-            android:id="@+id/btnHamburger"
+            android:id="@+id/btnMenu"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentStart="true"

@@ -7,13 +7,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Background -->
+    <!-- UniPool Background -->
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
         android:src="@drawable/bg_unipool"
+        android:scaleType="centerCrop"
         android:contentDescription="Background"/>
 
     <RelativeLayout
@@ -26,11 +26,11 @@
             android:id="@+id/btnMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
             android:layout_margin="20dp"
-            android:src="@drawable/ic_menu_24"
             android:contentDescription="Menu"
+            android:src="@drawable/ic_menu_24"
             app:backgroundTint="@android:color/white"
             app:tint="@android:color/black"/>
 
@@ -38,13 +38,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/btnMenu"
-            android:layout_marginTop="16dp">
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="16dp">
+
                 <!-- Main Card -->
 
                 <LinearLayout
@@ -56,7 +57,7 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                    <!-- UniPool Logo -->
+                    <!-- Logo -->
 
                     <ImageView
                         android:layout_width="180dp"
@@ -73,9 +74,9 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="16dp"
                         android:text="MESSAGES"
-                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
                         android:textSize="28sp"
-                        android:textStyle="bold"/>
+                        android:textColor="@android:color/black"/>
 
                     <!-- Yellow Accent -->
 
@@ -87,15 +88,15 @@
                         android:layout_marginBottom="24dp"
                         android:background="#F4C430"/>
 
-                    <!-- Section Title -->
+                    <!-- Subtitle -->
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Your Conversations"
-                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
                         android:textSize="18sp"
-                        android:textStyle="bold"/>
+                        android:textColor="@android:color/black"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -106,13 +107,14 @@
                         android:textColor="#777777"
                         android:textSize="14sp"/>
 
-                    <!-- Conversation Container -->
+                    <!-- DO NOT CHANGE THIS ID -->
 
                     <LinearLayout
                         android:id="@+id/layoutConversations"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"/>
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -120,8 +122,6 @@
         </ScrollView>
 
     </RelativeLayout>
-
-    <!-- Staff Navigation Drawer -->
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"

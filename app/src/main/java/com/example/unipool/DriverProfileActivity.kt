@@ -6,7 +6,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.widget.ImageView
 import com.google.android.material.navigation.NavigationView
 
 class DriverProfileActivity : AppCompatActivity() {
@@ -15,7 +15,7 @@ class DriverProfileActivity : AppCompatActivity() {
 
     private lateinit var navigationView: NavigationView
 
-    private lateinit var btnMenu: FloatingActionButton
+    private lateinit var btnMenu: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +32,11 @@ class DriverProfileActivity : AppCompatActivity() {
         navigationView =
             findViewById(
                 R.id.navigationView
+            )
+
+        btnMenu =
+            findViewById(
+                R.id.btnMenu
             )
 
         setupDrawer()
