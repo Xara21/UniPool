@@ -87,6 +87,12 @@ class DriverHomeActivity : AppCompatActivity() {
                 // UPDATED
                 R.id.nav_messages -> {
 
+                    android.widget.Toast.makeText(
+                        this,
+                        "Driver messages clicked",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+
                     startActivity(
                         Intent(
                             this,
