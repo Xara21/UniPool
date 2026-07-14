@@ -151,6 +151,12 @@ class StudentHomeActivity : AppCompatActivity() {
 
                 R.id.nav_messages -> {
 
+                    android.widget.Toast.makeText(
+                        this,
+                        "Messages clicked",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+
                     startActivity(
                         Intent(
                             this,

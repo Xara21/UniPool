@@ -46,38 +46,9 @@ object TripManager {
 
     fun initDefaultTrips() {
 
-        if (tripLogsList.isEmpty()) {
+        tripLogsList.clear()
 
-            tripLogsList.add(
-                TripLog(
-                    "1",
-                    "Jane Doe",
-                    "3",
-                    "2025-07-21 08:00 AM",
-                    "2025-07-21 09:00 AM",
-                    "Main Campus",
-                    "Completed",
-                    12,
-                    "Regular Noon Shuttle",
-                    createDefaultSeats()
-                )
-            )
-
-            tripLogsList.add(
-                TripLog(
-                    "2",
-                    "John Smith",
-                    "5",
-                    "2025-07-21 09:30 AM",
-                    "2025-07-21 10:30 AM",
-                    "East Campus",
-                    "In Progress",
-                    8,
-                    "Express Route",
-                    createDefaultSeats()
-                )
-            )
-        }
+        currentTrip = null
     }
 
     fun loadFromStorage(context: Context) {

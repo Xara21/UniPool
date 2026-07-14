@@ -108,22 +108,64 @@ class StaffHomeActivity : AppCompatActivity() {
 
             when (item.itemId) {
 
-                R.id.nav_home -> drawerLayout.closeDrawer(GravityCompat.START)
+                R.id.nav_home -> {
 
-                R.id.nav_reserve ->
-                    startActivity(Intent(this, StaffAvailableTripsActivity::class.java))
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                }
 
+                R.id.nav_reserve -> {
 
+                    startActivity(
+                        Intent(
+                            this,
+                            StaffAvailableTripsActivity::class.java
+                        )
+                    )
+                }
+
+                R.id.nav_schedule -> {
+
+                    startActivity(
+                        Intent(
+                            this,
+                            StaffScheduleActivity::class.java
+                        )
+                    )
+                }
+
+                R.id.nav_messages -> {
+
+                    startActivity(
+                        Intent(
+                            this,
+                            StaffMessagesActivity::class.java
+                        )
+                    )
+                }
+
+                R.id.nav_history -> {
+
+                    startActivity(
+                        Intent(
+                            this,
+                            StaffHistoryActivity::class.java
+                        )
+                    )
+                }
 
                 R.id.nav_logout -> {
 
-                    val intent = Intent(this, LoginActivity::class.java)
+                    val intent = Intent(
+                        this,
+                        LoginActivity::class.java
+                    )
 
                     intent.flags =
                         Intent.FLAG_ACTIVITY_NEW_TASK or
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK
 
                     startActivity(intent)
+
                     finish()
                 }
             }
